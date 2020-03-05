@@ -1,0 +1,5 @@
+SoftArm.cpp:16:1:SOFT_ARM::SOFT_ARM()	24	static
+SoftArm.cpp:22:6:void SOFT_ARM::setup()	40	static
+SoftArm.cpp:38:6:void SOFT_ARM::loop()	48	static
+SoftArm.cpp:61:6:void SOFT_ARM::controlPressureAll()	16	static
+SoftArm.cpp:65:6:void SOFT_ARM::writeOpeningAll()	16	static
