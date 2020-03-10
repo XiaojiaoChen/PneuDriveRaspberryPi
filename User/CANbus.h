@@ -14,21 +14,7 @@
 #include "PneuDrive.h"
 #include "can.h"
 
- struct QUATERNIONCOMPACT{
-	 /*Compressed Quaternion by omitting the largest component.
-	  * Other component limited to 15bit:
-	  * maxLocHigh and maxLocLow specify which location is the max component(omitted one) (default:q=w+xi+yj+zk)
-	  * maxSign is not necessarily needed, for simplicity we added it.
-	  */
-	 uint16_t imuData0:14,maxLocHigh:1,distanceBit2:1;
-	 uint16_t imuData1:14,maxLocLow:1,distanceBit1:1;
-	 uint16_t imuData2:14,maxSign:1,distanceBit0:1;
- };
 
- struct SENSORDATA{
- uint16_t pressure:12, distanceBit6_3:4;
- struct QUATERNIONCOMPACT quaternionCom;
- };
 
  struct CANBUS_HANDLE{
 	CAN_HandleTypeDef     CanHandle;

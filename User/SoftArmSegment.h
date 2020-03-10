@@ -16,7 +16,6 @@ extern "C" {
 
 #include "PneuDrive.h"
 
-
 #define BELLOWNUM 6
 
 class SOFT_ARM_SEGMENT{

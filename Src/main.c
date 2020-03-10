@@ -41,6 +41,7 @@
 #include "builtInAnalog.h"
 #include "builtInPWM.h"
 #include "builtInDigital.h"
+#include "spiSlave.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -137,7 +138,7 @@ int main(void)
 	my_UsartInit();
 
 	/*******************************Analog init***************************/
-	AnaBuiltInStart();
+	//AnaBuiltInStart();
 
 #if (ADBOARD_NUM>0)
 	ADBoard_Init();
@@ -241,17 +242,22 @@ void SystemClock_Config(void)
 /*-----------------------Call back functions----------------------*/
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
-	int ret = 1;
+
 #if (ADBOARD_NUM>0)
-	ret=ADBoard_SPICallback(hspi);
+	ADBoard_SPICallback(hspi);
 #endif
+	slaveSPITxRxCpltCallback(hspi);
 
 }
+void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi)
+{
+	slaveSPIErrorCallback(hspi);
 
+}
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	int ret = 1;
-	static INTChannel=0;
+	static int INTChannel=0;
 	if(GPIO_Pin==E0_Pin){
 		INTChannel=0;
 	}

@@ -1,4 +1,4 @@
-User/SoftArm.o: ../User/SoftArm.cpp ../User/SoftArm.h \
+User/myMain.o: ../User/myMain.cpp \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDrive.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDriveLL.h \
  ../Inc/main.h ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
@@ -54,11 +54,12 @@ User/SoftArm.o: ../User/SoftArm.cpp ../User/SoftArm.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PRESSURESENSOR.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/trajectoryGeneration.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/joyStick.h \
- ../User/SoftArmSegment.h \
+ ../User/spiSlave.h \
+ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/SoftArm.h \
+ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/SoftArmSegment.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/CANbus.h \
- ../Inc/can.h ../Inc/main.h ../User/messages.h
-
-../User/SoftArm.h:
+ ../Inc/can.h ../Inc/main.h \
+ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/messages.h
 
 C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDrive.h:
 
@@ -172,7 +173,11 @@ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/Pneu
 
 C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/joyStick.h:
 
-../User/SoftArmSegment.h:
+../User/spiSlave.h:
+
+C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/SoftArm.h:
+
+C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/SoftArmSegment.h:
 
 C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/CANbus.h:
 
@@ -180,4 +185,4 @@ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/Pneu
 
 ../Inc/main.h:
 
-../User/messages.h:
+C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/messages.h:

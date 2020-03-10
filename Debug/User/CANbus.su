@@ -1,0 +1,4 @@
+CANbus.cpp:22:6:void canConfig()	64	static
+CANbus.cpp:64:6:void canSend()	8	static
+CANbus.cpp:88:6:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	16	static
+CANbus.cpp:101:6:void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef*)	16	static

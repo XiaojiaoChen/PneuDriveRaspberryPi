@@ -1,5 +1,5 @@
-User/Interface_example_softArmSegment.o: \
- ../User/Interface_example_softArmSegment.cpp \
+User/CANbus.o: ../User/CANbus.cpp \
+ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/CANbus.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDrive.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDriveLL.h \
  ../Inc/main.h ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
@@ -55,10 +55,10 @@ User/Interface_example_softArmSegment.o: \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PRESSURESENSOR.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/trajectoryGeneration.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/joyStick.h \
- C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/SoftArm.h \
- C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/SoftArmSegment.h \
- C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/myCanbus.h \
- ../Inc/can.h ../Inc/main.h
+ ../Inc/can.h ../Inc/main.h ../User/softArm.h ../User/SoftArmSegment.h \
+ ../User/messages.h
+
+C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/CANbus.h:
 
 C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDrive.h:
 
@@ -172,12 +172,12 @@ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/Pneu
 
 C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/joyStick.h:
 
-C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/SoftArm.h:
-
-C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/SoftArmSegment.h:
-
-C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/myCanbus.h:
-
 ../Inc/can.h:
 
 ../Inc/main.h:
+
+../User/softArm.h:
+
+../User/SoftArmSegment.h:
+
+../User/messages.h:

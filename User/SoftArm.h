@@ -16,10 +16,12 @@ extern "C" {
 #include "PneuDrive.h"
 #include "SoftArmSegment.h"
 #include <CANbus.h>
+#include "messages.h"
 
-enum CONTROL_MODE{
-	openingControl,
-	pressureControl,
+enum COMMAND_MODE{
+	openingCommandType,
+	pressureCommandType
+
 };
 
 
@@ -31,13 +33,11 @@ public:
 
 	SOFT_ARM_SEGMENT armSegments[SEGMENTNUM];
 
-	uint16_t commandsBuffer[SEGMENTNUM][BELLOWNUM];
 	struct SENSORDATA sensorData[SEGMENTNUM][BELLOWNUM];
+	struct COMMANDDATA commandData[SEGMENTNUM][BELLOWNUM];
 	uint8_t canBusCommand[4];
-	void setup();
-	void loop();
-	void controlPressureAll();
-	void writeOpeningAll();
+	void setupChamberPWMPort();
+	void writeCommandAll();
 };
 
 
