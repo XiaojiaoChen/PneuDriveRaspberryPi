@@ -7,47 +7,53 @@
  */
 #include "messages.h"
 #include "stdlib.h"
+
+#if COMPACT_VERSION_PRESSURE_HPA==1
+	#define COMPACT_SHIFT_BIT 2
+#else
+	#define COMPACT_SHIFT_BIT 1
+#endif
+
 static unsigned int fastSqrt32(unsigned long n);
 
-
-void packQuaternion(int16_t *qOri,struct QUATERNIONCOMPACT *qCom){
+void packQuaternion(struct QUATERNION *qOri,struct QUATERNIONCOMPACT *qCom){
 	uint16_t maxLoc=0;
 	for(int i=0;i<4;i++){
-		if(i>0 && (abs(qOri[i])>abs(qOri[maxLoc])))
+		if(i>0 && (abs(qOri->imuData[i])>abs(qOri->imuData[maxLoc])))
 			maxLoc=i;
 	}
 	if(maxLoc==0)
 	{
-		qCom->imuData0=((uint16_t)qOri[1])>>2;
-		qCom->imuData1=((uint16_t)qOri[2])>>2;
-		qCom->imuData2=((uint16_t)qOri[3])>>2;
+		qCom->imuData0=((uint16_t)qOri->imuData[1])>>COMPACT_SHIFT_BIT;
+		qCom->imuData1=((uint16_t)qOri->imuData[2])>>COMPACT_SHIFT_BIT;
+		qCom->imuData2=((uint16_t)qOri->imuData[3])>>COMPACT_SHIFT_BIT;
 	}
 	else if (maxLoc==1){
-		qCom->imuData0=((uint16_t)qOri[0])>>2;
-		qCom->imuData1=((uint16_t)qOri[2])>>2;
-		qCom->imuData2=((uint16_t)qOri[3])>>2;
+		qCom->imuData0=((uint16_t)qOri->imuData[0])>>COMPACT_SHIFT_BIT;
+		qCom->imuData1=((uint16_t)qOri->imuData[2])>>COMPACT_SHIFT_BIT;
+		qCom->imuData2=((uint16_t)qOri->imuData[3])>>COMPACT_SHIFT_BIT;
 	}
 	else if(maxLoc==2){
-		qCom->imuData0=((uint16_t)qOri[0])>>2;
-		qCom->imuData1=((uint16_t)qOri[1])>>2;
-		qCom->imuData2=((uint16_t)qOri[3])>>2;
+		qCom->imuData0=((uint16_t)qOri->imuData[0])>>COMPACT_SHIFT_BIT;
+		qCom->imuData1=((uint16_t)qOri->imuData[1])>>COMPACT_SHIFT_BIT;
+		qCom->imuData2=((uint16_t)qOri->imuData[3])>>COMPACT_SHIFT_BIT;
 	}
 	else{
-		qCom->imuData0=((uint16_t)qOri[0])>>2;
-		qCom->imuData1=((uint16_t)qOri[1])>>2;
-		qCom->imuData2=((uint16_t)qOri[2])>>2;
+		qCom->imuData0=((uint16_t)qOri->imuData[0])>>COMPACT_SHIFT_BIT;
+		qCom->imuData1=((uint16_t)qOri->imuData[1])>>COMPACT_SHIFT_BIT;
+		qCom->imuData2=((uint16_t)qOri->imuData[2])>>COMPACT_SHIFT_BIT;
 	}
 	qCom->maxLocHigh=maxLoc>>1;
 	qCom->maxLocLow=maxLoc;
-	qCom->maxSign=((uint16_t)(((uint16_t)qOri[maxLoc])&0x8000))>>15;
+	qCom->maxSign=((uint16_t)(((uint16_t)qOri->imuData[maxLoc])&0x8000))>>15;
 }
 
-void unpackQuaternion(struct QUATERNIONCOMPACT *qCom,int16_t* qOri){
+void unpackQuaternion(struct QUATERNIONCOMPACT *qCom,struct QUATERNION *qOri){
 	int32_t lastNumOri=0;
 	uint16_t maxLoc=(uint16_t)(qCom->maxLocHigh<<1 | qCom->maxLocLow);
-	int16_t qRes0=(int16_t)(((uint16_t)qCom->imuData0)<<2);
-	int16_t qRes1=(int16_t)(((uint16_t)qCom->imuData1)<<2);
-	int16_t qRes2=(int16_t)(((uint16_t)qCom->imuData2)<<2);
+	int16_t qRes0=(int16_t)(((uint16_t)qCom->imuData0)<<COMPACT_SHIFT_BIT);
+	int16_t qRes1=(int16_t)(((uint16_t)qCom->imuData1)<<COMPACT_SHIFT_BIT);
+	int16_t qRes2=(int16_t)(((uint16_t)qCom->imuData2)<<COMPACT_SHIFT_BIT);
 
 	uint32_t sum=qRes0*qRes0+qRes1*qRes1+qRes2*qRes2;
 	const int maxNum=(uint32_t)(1<<30);
@@ -55,28 +61,28 @@ void unpackQuaternion(struct QUATERNIONCOMPACT *qCom,int16_t* qOri){
 	int16_t lastNum=qCom->maxSign?-lastNumOri:lastNumOri;
 	if(maxLoc==0)
 	{
-		qOri[1]=qRes0;
-		qOri[2]=qRes1;
-		qOri[3]=qRes2;
-		qOri[0]=lastNum;
+		qOri->imuData[1]=qRes0;
+		qOri->imuData[2]=qRes1;
+		qOri->imuData[3]=qRes2;
+		qOri->imuData[0]=lastNum;
 	}
 	else if (maxLoc==1){
-		qOri[0]=qRes0;
-		qOri[2]=qRes1;
-		qOri[3]=qRes2;
-		qOri[1]=lastNum;
+		qOri->imuData[0]=qRes0;
+		qOri->imuData[2]=qRes1;
+		qOri->imuData[3]=qRes2;
+		qOri->imuData[1]=lastNum;
 	}
 	else if(maxLoc==2){
-		qOri[0]=qRes0;
-		qOri[1]=qRes1;
-		qOri[3]=qRes2;
-		qOri[2]=lastNum;
+		qOri->imuData[0]=qRes0;
+		qOri->imuData[1]=qRes1;
+		qOri->imuData[3]=qRes2;
+		qOri->imuData[2]=lastNum;
 	}
 	else{
-		qOri[0]=qRes0;
-		qOri[1]=qRes1;
-		qOri[2]=qRes2;
-		qOri[3]=lastNum;
+		qOri->imuData[0]=qRes0;
+		qOri->imuData[1]=qRes1;
+		qOri->imuData[2]=qRes2;
+		qOri->imuData[3]=lastNum;
 	}
 }
 

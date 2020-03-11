@@ -9,54 +9,56 @@
 #ifndef MESSAGES_H_
 #define MESSAGES_H_
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
-#include "stm32f7xx.h"
+#include "stm32f1xx.h"
 
- struct QUATERNIONCOMPACT{
-	 /*Compressed Quaternion by omitting the largest component.
-	  * Other component limited to 15bit:
-	  * maxLocHigh and maxLocLow specify which location is the max component(omitted one) (default:q=w+xi+yj+zk)
-	  * maxSign is not necessarily needed, for simplicity we added it.
-	  */
-	 uint16_t imuData0:14,maxLocHigh:1,distanceBit2:1;
-	 uint16_t imuData1:14,maxLocLow:1,distanceBit1:1;
-	 uint16_t imuData2:14,maxSign:1,distanceBit0:1;
- };
+/*If this value is 1, the pressure is encoded by 12 bit, with unit hPa. The quaternion is encoded by 14 bit for each component.
+ *If this value is 0, the pressure is encoded by 9 bit, with unit KPa. The quaternion is encoded by 15 bit for each component.*/
+#define COMPACT_VERSION_PRESSURE_HPA  0
 
 
- /*SENSORDATA must have the same length with COMMANDDATA for SPI fullduplex communication*/
- struct SENSORDATA{
- uint16_t pressure:12, distanceBit6_3:4;
- struct QUATERNIONCOMPACT quaternionCom;
- };
+struct QUATERNION{
+ /*unCompressed Quaternion*/
+ int16_t imuData[4];
+};
 
+struct QUATERNIONCOMPACT {
+#if COMPACT_VERSION_PRESSURE_HPA==1
+/* Compressed Quaternion by omitting the largest component, Other component limited to 14bit.
+ * maxLocHigh and maxLocLow specify the location of the max component(omitted one) (default:q=w+xi+yj+zk)
+ * maxSign is the sign bit of the max component, which is not necessarily needed. For simplicity we added it.*/
+	uint16_t imuData0 :14, maxLocHigh :1, distanceBit2 :1;
+	uint16_t imuData1 :14, maxLocLow :1, distanceBit1 :1;
+	uint16_t imuData2 :14, maxSign :1, distanceBit0 :1;
+#else
+	uint16_t imuData0 :15, maxLocHigh :1;
+	uint16_t imuData1 :15, maxLocLow :1;
+	uint16_t imuData2 :15, maxSign :1;
+#endif
+};
 
- struct COMMANDDATA{
- uint16_t values[3];
- uint16_t commandType;
- };
+struct SENSORDATA {
+#if COMPACT_VERSION_PRESSURE_HPA==1
+	uint16_t pressure:12, distance:4;
+#else
+	uint16_t pressure:9, distance:7;
+#endif
+	struct QUATERNIONCOMPACT quaternionCom;
+};
 
-
-
-
-
+struct COMMANDDATA {
+	uint16_t values[3];
+	uint16_t commandType;
+};
 
 
 /*packQ should be used in sender, i.e. actuator nodes*/
-void packQuaternion(int16_t* qOri,struct QUATERNIONCOMPACT *qCom);
+void packQuaternion(struct QUATERNION *qOri, struct QUATERNIONCOMPACT *qCom);
 
 /*unpackQ should be used in decoder, i.e. PC host*/
-void unpackQuaternion(struct QUATERNIONCOMPACT *qCom,int16_t* qOri);
-
-
-
-
-
-
-
-
+void unpackQuaternion(struct QUATERNIONCOMPACT *qCom, struct QUATERNION *qOri);
 
 #ifdef __cplusplus
 }
