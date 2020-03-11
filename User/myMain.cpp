@@ -27,10 +27,11 @@ void setup()
 	/*soft arm chambers' PWM port mapping*/
 	softArm.setupChamberPWMPort();
 
-		canConfig();
+	/*start canBus receive*/
+	canConfig();
 
 	/**********start the SPI slave in DMA*****/
-		spiSlaveStart();
+	spiSlaveStart();
 
 }
 
