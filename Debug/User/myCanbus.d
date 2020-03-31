@@ -1,4 +1,10 @@
-User/spiSlave.o: ../User/spiSlave.cpp ../User/spiSlave.h \
+User/myCanbus.o: ../User/myCanbus.cpp ../User/myCanbus.h \
+ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDrive.h \
+ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDriveLL.h \
+ ../Inc/main.h ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
+ ../Inc/stm32f7xx_hal_conf.h \
+ ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
+ ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h \
  ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f7xx.h \
  ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h \
  ../Drivers/CMSIS/Include/core_cm7.h \
@@ -7,10 +13,6 @@ User/spiSlave.o: ../User/spiSlave.cpp ../User/spiSlave.h \
  ../Drivers/CMSIS/Include/cmsis_gcc.h \
  ../Drivers/CMSIS/Include/mpu_armv7.h \
  ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h \
- ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
- ../Inc/stm32f7xx_hal_conf.h \
- ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
- ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_exti.h \
@@ -34,10 +36,6 @@ User/spiSlave.o: ../User/spiSlave.cpp ../User/spiSlave.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h \
- ../User/softArm.h \
- C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDrive.h \
- C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDriveLL.h \
- ../Inc/main.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/builtInHWConfig.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDriveConfig.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Drivers/CMSIS/DSP/Include/arm_math.h \
@@ -56,12 +54,23 @@ User/spiSlave.o: ../User/spiSlave.cpp ../User/spiSlave.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PRESSURESENSOR.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/trajectoryGeneration.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/joyStick.h \
- ../User/SoftArmSegment.h \
- C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/CANbus.h \
- ../Inc/can.h ../Inc/main.h ../User/messages.h \
- ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_HAL.h ../Inc/spi.h
+ ../Inc/can.h ../Inc/main.h ../User/softArm.h ../User/SoftArmSegment.h
 
-../User/spiSlave.h:
+../User/myCanbus.h:
+
+C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDrive.h:
+
+C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDriveLL.h:
+
+../Inc/main.h:
+
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
+
+../Inc/stm32f7xx_hal_conf.h:
+
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h:
+
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h:
 
 ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f7xx.h:
 
@@ -78,14 +87,6 @@ User/spiSlave.o: ../User/spiSlave.cpp ../User/spiSlave.h \
 ../Drivers/CMSIS/Include/mpu_armv7.h:
 
 ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h:
-
-../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
-
-../Inc/stm32f7xx_hal_conf.h:
-
-../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h:
-
-../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h:
 
 ../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h:
 
@@ -133,14 +134,6 @@ User/spiSlave.o: ../User/spiSlave.cpp ../User/spiSlave.h \
 
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h:
 
-../User/softArm.h:
-
-C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDrive.h:
-
-C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDriveLL.h:
-
-../Inc/main.h:
-
 C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/builtInHWConfig.h:
 
 C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/PneuDriveConfig.h:
@@ -177,16 +170,10 @@ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/Pneu
 
 C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/joyStick.h:
 
-../User/SoftArmSegment.h:
-
-C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/CANbus.h:
-
 ../Inc/can.h:
 
 ../Inc/main.h:
 
-../User/messages.h:
+../User/softArm.h:
 
-../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_HAL.h:
-
-../Inc/spi.h:
+../User/SoftArmSegment.h:

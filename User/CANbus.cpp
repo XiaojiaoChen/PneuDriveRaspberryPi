@@ -24,24 +24,34 @@ void canConfig(){
 	CAN_FilterTypeDef  sFilterConfig;
 	/*##-2- Configure the CAN Filter ###########################################*/
 	/*For single CAN instance(14 dedicated filter banks)*/
-	for(int i=0;i<14;i++){
-		sFilterConfig.FilterBank = i;
-		sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
-		sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
-		sFilterConfig.FilterIdHigh = 4*i;
-		sFilterConfig.FilterIdLow = 4*i+1;
-		sFilterConfig.FilterMaskIdHigh = 4*i+2;
-		sFilterConfig.FilterMaskIdLow = 4*i+3;
-		sFilterConfig.FilterFIFOAssignment = i/2;//CAN_RX_FIFO0=0; CAN_RX_FIFO1=1
+//	for(int i=0;i<14;i++){
+//		sFilterConfig.FilterBank = i;
+//		sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
+//		sFilterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
+//		sFilterConfig.FilterIdHigh = 4*i;
+//		sFilterConfig.FilterIdLow = 4*i+1;
+//		sFilterConfig.FilterMaskIdHigh = 4*i+2;
+//		sFilterConfig.FilterMaskIdLow = 4*i+3;
+//		sFilterConfig.FilterFIFOAssignment = i/2;//CAN_RX_FIFO0=0; CAN_RX_FIFO1=1
+//		sFilterConfig.FilterActivation = ENABLE;
+//		sFilterConfig.SlaveStartFilterBank = 14;
+
+		sFilterConfig.FilterBank = 0;
+		sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+		sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+		sFilterConfig.FilterIdHigh = 0x0000;
+		sFilterConfig.FilterIdLow = 0x0000;
+		sFilterConfig.FilterMaskIdHigh = 0x0000;
+		sFilterConfig.FilterMaskIdLow = 0x0000;
+		sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
 		sFilterConfig.FilterActivation = ENABLE;
 		sFilterConfig.SlaveStartFilterBank = 14;
-
 		if (HAL_CAN_ConfigFilter(&canbus.CanHandle, &sFilterConfig) != HAL_OK)
 		{
 		/* Filter configuration Error */
 		Error_Handler();
 		}
-	}
+//	}
 
 
 	/*##-3- Start the CAN peripheral ###########################################*/
@@ -70,9 +80,9 @@ void canSend()
 	canbus.TxHeader.IDE = CAN_ID_STD;
 	canbus.TxHeader.TransmitGlobalTime = DISABLE;
 
-	canbus.TxHeader.DLC = 4;
-	canbus.TxData=(uint8_t *)(softArm.canBusCommand);
 
+	canbus.TxData=(uint8_t *)(softArm.canBusCommand);
+	canbus.TxHeader.DLC = sizeof(softArm.canBusCommand);
 
 	/* Start the Transmission process */
 	if (HAL_CAN_AddTxMessage(&canbus.CanHandle, &canbus.TxHeader, canbus.TxData, &canbus.TxMailbox) != HAL_OK)
@@ -94,6 +104,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
     /* Reception Error */
     Error_Handler();
   }
+  printf("Get Can Rx %d\r\n",canbus.RxHeader.StdId);
 
 }
 
@@ -107,6 +118,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
     /* Reception Error */
     Error_Handler();
   }
+  printf("Get Can Rx %d\r\n",canbus.RxHeader.StdId);
 
 
 }

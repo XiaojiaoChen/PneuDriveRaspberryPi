@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-#include "stm32f1xx.h"
+#include "stm32f7xx_HAL.h"
 
 /*If this value is 1, the pressure is encoded by 12 bit, with unit hPa. The quaternion is encoded by 14 bit for each component.
  *If this value is 0, the pressure is encoded by 9 bit, with unit KPa. The quaternion is encoded by 15 bit for each component.*/

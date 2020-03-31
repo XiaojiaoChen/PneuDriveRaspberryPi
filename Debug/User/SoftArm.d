@@ -56,7 +56,8 @@ User/SoftArm.o: ../User/SoftArm.cpp ../User/SoftArm.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/joyStick.h \
  ../User/SoftArmSegment.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/CANbus.h \
- ../Inc/can.h ../Inc/main.h ../User/messages.h
+ ../Inc/can.h ../Inc/main.h ../User/messages.h \
+ ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_HAL.h
 
 ../User/SoftArm.h:
 
@@ -181,3 +182,5 @@ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/Pneu
 ../Inc/main.h:
 
 ../User/messages.h:
+
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_HAL.h:

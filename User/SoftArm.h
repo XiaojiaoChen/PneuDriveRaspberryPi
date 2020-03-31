@@ -35,7 +35,7 @@ public:
 
 	struct SENSORDATA sensorData[SEGMENTNUM][BELLOWNUM];
 	struct COMMANDDATA commandData[SEGMENTNUM][BELLOWNUM];
-	uint8_t canBusCommand[4];
+	uint8_t canBusCommand[8];
 	void setupChamberPWMPort();
 	void writeCommandAll();
 };

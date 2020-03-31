@@ -56,7 +56,7 @@ User/CANbus.o: ../User/CANbus.cpp \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/trajectoryGeneration.h \
  C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/joyStick.h \
  ../Inc/can.h ../Inc/main.h ../User/softArm.h ../User/SoftArmSegment.h \
- ../User/messages.h
+ ../User/messages.h ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_HAL.h
 
 C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/User/CANbus.h:
 
@@ -181,3 +181,5 @@ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/Pneu
 ../User/SoftArmSegment.h:
 
 ../User/messages.h:
+
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_HAL.h:

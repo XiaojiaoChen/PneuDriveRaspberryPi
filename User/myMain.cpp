@@ -48,6 +48,11 @@ void loop()
 	softArm.writeCommandAll();
 
 
+//	softArm.canBusCommand[0]=0xFF;
+//	softArm.canBusCommand[1]=0xEF;
+//	softArm.canBusCommand[2]=0xFE;
+//	softArm.canBusCommand[3]=0xAF;
+//	canSend();
 }
 
 
@@ -55,7 +60,7 @@ void loop()
 /*serial output using DMA*/
 void serialDisplay()
 {
-	printf("ahh\r\n");
+	printf("Time: %d\r\n",millis());
 }
 
 
