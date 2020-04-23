@@ -15,7 +15,7 @@ enum PWMBoardTypeEnum{LT8500, PCA9685};
 
 /***************************Configure hardware extention********************/
 
-#define ADBOARD_NUM 	0 		//The quantity of AD7616 extension boards
+#define ADBOARD_NUM 	1 		//The quantity of AD7616 extension boards
 #define ADBOARD_TYPE	AD7606
 
 #define DABOARD_NUM 	0		//The quantity of LTC2668 extension boards

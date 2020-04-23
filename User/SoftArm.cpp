@@ -26,7 +26,7 @@ void SOFT_ARM::setupChamberPWMPort()
 		for(int i=0;i<BELLOWNUM;i++)
 		{
 			CHAMBER *bellowCur=armSegCur->bellows[i];
-			int pwmPortOffset=BUILTIN_PWM_NUM+j*16;
+			int pwmPortOffset=BUILTIN_PWM_NUM+j*16; //each pwm board has 16*3 ports, while we only need 6*2*3 on each
 			/*analog port is treated as the overall No. in our arm.*/
 			bellowCur->attach(pwmPortOffset+i*2, pwmPortOffset+i*2+1, j*BELLOWNUM+i);
 			bellowCur->writeOpening(0);
@@ -46,13 +46,13 @@ void SOFT_ARM::writeCommandAll()
 		for(int i=0;i<BELLOWNUM;i++)
 		{
 			CHAMBER *bellowCur=armSegCur->bellows[i];
-			armSegCur->bellows[i]->pressure=sensorData[j][i].pressure*100-101500;
+			armSegCur->bellows[i]->pressure=sensorData[j][i].pressure*1000-101500;
 
 			if(commandData[j][i].commandType==pressureCommandType){
 				float pressureCommandTemp=commandData[j][i].values[0];
 				bellowCur->writePressure(pressureCommandTemp);
 			}
-			else if(commandData[j][i].commandType==pressureCommandType){
+			else if(commandData[j][i].commandType==openingCommandType){
 				float openingCommandTemp=((int16_t)commandData[j][i].values[0])*3.0517578125e-5;//values[0]/32767
 				bellowCur->writeOpening(openingCommandTemp);
 			}

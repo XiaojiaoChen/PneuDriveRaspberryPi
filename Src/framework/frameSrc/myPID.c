@@ -22,7 +22,6 @@ float updatePID(PID_Type *pid,float r, float y)
 	float err = r - y;
 	float kprerr = pid->Kpr * r-y;
 	float kdrerr = pid->Kdr * r-y;
-	float v1;
 
 
 	if(pid->Direction==-1)

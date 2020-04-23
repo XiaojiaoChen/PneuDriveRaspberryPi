@@ -71,7 +71,7 @@ float voltage2flowrate(float Pu,float Pd,float u)
 //output flowrate  ----->>>  needed input voltage
 float flowrate2Voltage(float Pu,float Pd,float q)
 { 
-	float Pr,A,flow,tem;
+	float Pr,A,tem;
 
 	Pu+=Patm;
 	Pd+=Patm;

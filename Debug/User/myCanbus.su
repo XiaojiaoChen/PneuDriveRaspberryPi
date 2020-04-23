@@ -1,7 +1,0 @@
-myCanbus.cpp:22:6:void canConfig()	64	static
-myCanbus.cpp:64:6:void canSend()	8	static
-myCanbus.cpp:87:6:void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef*)	16	static
-myCanbus.cpp:99:6:void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef*)	16	static
-myCanbus.cpp:114:6:void packQuaternion(int16_t*, QUATERNIONCOMPACT*)	24	static
-myCanbus.cpp:145:14:unsigned int fastSqrt32(long unsigned int)	24	static
-myCanbus.cpp:159:6:void unpackQuaternion(QUATERNIONCOMPACT*, int16_t*)	40	static

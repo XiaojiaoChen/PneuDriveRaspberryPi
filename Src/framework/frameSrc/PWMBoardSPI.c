@@ -73,22 +73,26 @@ static void PWMBoardSPI_bufferDutyChannel(uint16_t num, float fduty)
 {
 
 	uint16_t on;
+
 	on = round(4096 * fduty);
 	on=CONSTRAIN(on,0,4095);
 	num=CONSTRAIN(num,0,PWMBOARDSPI_CHANNELNUM-1);
 	uint16_t boards=num/LT8500_CHANNELNUM;
 	uint16_t boardNum=num%LT8500_CHANNELNUM;
+	boardNum = LT8500_CHANNELNUM-1 - boardNum;
+
 	uint16_t quo=(boardNum/2);
 	uint16_t rem=(boardNum%2);
 	uint16_t startingBytesNum=quo*3;
 	uint8_t *pt=&(ptPWMBoardSPI->CMDBuffer[boards][startingBytesNum]);
 
 	if(rem==0){
-			*pt++=(uint8_t)(on>>4);
+			*pt++=(uint8_t)((on>>4)&0xFF);
 			uint8_t ori=*pt;
 			ori&=0x0F;
 			ori|= ((uint8_t)(on<<4) & 0xF0);
 			*pt=ori;
+		//	*pt=(uint8_t)(((*pt)&0x0F)|((uint8_t)(on&0x0F)<<4));
 	}
 	else
 	{
@@ -98,6 +102,10 @@ static void PWMBoardSPI_bufferDutyChannel(uint16_t num, float fduty)
 		ori|= ((uint8_t)(on>>8) & 0x0F);
 		*pt++=ori;
 		*pt=(uint8_t)(on);
+//		*pt=(uint8_t)(((*pt)&0xF0)|((uint8_t)(on>>8)));
+//		pt++;
+//		*pt=(uint8_t)(on&0xFF);
+
 	}
 	ptPWMBoardSPI->dirtyDuty=1;
 	PWMBoardSPI_bufferCMD(ptPWMBoardSPI->syncMode);
@@ -111,6 +119,8 @@ static void PWMBoardSPI_bufferCorrection(uint16_t num,uint8_t value)
 	uint16_t boardNum=num%LT8500_CHANNELNUM;
 	uint16_t quo=(boardNum/2);
 	uint16_t rem=(boardNum%2);
+	boardNum = LT8500_CHANNELNUM-1 - boardNum;
+
 	uint16_t startingBytesNum=quo*3;
 	uint8_t *pt=&(ptPWMBoardSPI->CMDBuffer[boards][startingBytesNum]);
 	if(rem==0){
