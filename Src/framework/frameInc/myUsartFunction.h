@@ -15,11 +15,11 @@
 
 #include "stm32f7xx_hal.h"
 
-#define UART_TX_BUF_SIZE 600
+#define UART_TX_BUF_SIZE 1000
 #define UART_RX_BUF_SIZE 500
 #define COMMAND_SIZE 100
 
-#define UART_TX_BUF_NUM	8
+#define UART_TX_BUF_NUM	15
 
 typedef struct {
 	unsigned char header[4];

@@ -121,7 +121,6 @@ void CHAMBER::attachSensor(int AnalogPort)
 float CHAMBER::readPressure(){
 	//pressure = pressureSensor.read();
 	//pressure = pressureSensorspi.read();
-
 	return pressure;
 }
 

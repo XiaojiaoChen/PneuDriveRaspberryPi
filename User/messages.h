@@ -49,7 +49,7 @@ struct SENSORDATA {
 };
 
 struct COMMANDDATA {
-	uint16_t values[3];
+	int16_t values[3];
 	uint16_t commandType;
 };
 

@@ -41,15 +41,16 @@ void SOFT_ARM::setupChamberPWMPort()
 
 void SOFT_ARM::writeCommandAll()
 {
+
 	for(int j=0;j<SEGMENTNUM;j++){
 		SOFT_ARM_SEGMENT* armSegCur=&armSegments[j];
 		for(int i=0;i<BELLOWNUM;i++)
 		{
 			CHAMBER *bellowCur=armSegCur->bellows[i];
-			armSegCur->bellows[i]->pressure=sensorData[j][i].pressure*1000-101500;
+			armSegCur->bellows[i]->pressure=sensorData[j][i].pressure*1000-97000;
 
 			if(commandData[j][i].commandType==pressureCommandType){
-				float pressureCommandTemp=commandData[j][i].values[0];
+				float pressureCommandTemp=commandData[j][i].values[0]*1000;
 				bellowCur->writePressure(pressureCommandTemp);
 			}
 			else if(commandData[j][i].commandType==openingCommandType){
