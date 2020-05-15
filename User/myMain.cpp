@@ -19,7 +19,7 @@ void setup() {
 	setPeriodControlLoop(10);
 
 	/*setup 50Hz serial display loop*/
-	setPeriodSendLoop(50);
+	setPeriodSendLoop(100);
 
 	/*soft arm chambers' PWM port mapping*/
 	softArm.setupChamberPWMPort();
@@ -53,12 +53,12 @@ void serialDisplay() {
 	for (int i = 0; i < SEGMENTNUM; i++) {
 		printf(
 				"     %hd:%hd   %hd:%hd   %hd:%hd   %hd:%hd   %hd:%hd   %hd:%hd    |     %hu,  %hu, %hu, %hu, %hu, %hu\r\n",
-				softArm.commandData[i][0].values[0],softArm.sensorData[i][0].pressure-97,
-				softArm.commandData[i][1].values[0],softArm.sensorData[i][1].pressure-97,
-				softArm.commandData[i][2].values[0],softArm.sensorData[i][2].pressure-97,
-				softArm.commandData[i][3].values[0],softArm.sensorData[i][3].pressure-97,
-				softArm.commandData[i][4].values[0],softArm.sensorData[i][4].pressure-97,
-				softArm.commandData[i][5].values[0],softArm.sensorData[i][5].pressure-97,
+				softArm.commandData[i][0].values[0],softArm.sensorData[i][0].pressure-P_ATM/1000,
+				softArm.commandData[i][1].values[0],softArm.sensorData[i][1].pressure-P_ATM/1000,
+				softArm.commandData[i][2].values[0],softArm.sensorData[i][2].pressure-P_ATM/1000,
+				softArm.commandData[i][3].values[0],softArm.sensorData[i][3].pressure-P_ATM/1000,
+				softArm.commandData[i][4].values[0],softArm.sensorData[i][4].pressure-P_ATM/1000,
+				softArm.commandData[i][5].values[0],softArm.sensorData[i][5].pressure-P_ATM/1000,
 				softArm.sensorData[i][0].distance,
 				softArm.sensorData[i][1].distance,
 				softArm.sensorData[i][2].distance,

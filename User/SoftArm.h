@@ -26,6 +26,8 @@ enum COMMAND_MODE{
 
 
 #define SEGMENTNUM 9
+#define P_ATM 101000
+
 
 class SOFT_ARM{
 public:

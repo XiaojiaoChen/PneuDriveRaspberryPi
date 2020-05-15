@@ -8,6 +8,8 @@
 #include "stdio.h"
 
 
+
+
 /*************************SOFT ARM**************************
  *
  ***********************************************************/
@@ -30,6 +32,7 @@ void SOFT_ARM::setupChamberPWMPort()
 			/*analog port is treated as the overall No. in our arm.*/
 			bellowCur->attach(pwmPortOffset+i*2, pwmPortOffset+i*2+1, j*BELLOWNUM+i);
 			bellowCur->writeOpening(0);
+			HAL_Delay(10);
 		}
 	}
 
@@ -47,10 +50,10 @@ void SOFT_ARM::writeCommandAll()
 		for(int i=0;i<BELLOWNUM;i++)
 		{
 			CHAMBER *bellowCur=armSegCur->bellows[i];
-			armSegCur->bellows[i]->pressure=sensorData[j][i].pressure*1000-97000;
+			armSegCur->bellows[i]->pressure=sensorData[j][i].pressure*1000-P_ATM; //gauge PA
 
 			if(commandData[j][i].commandType==pressureCommandType){
-				float pressureCommandTemp=commandData[j][i].values[0]*1000;
+				float pressureCommandTemp=commandData[j][i].values[0]*1000;//gauge PA
 				bellowCur->writePressure(pressureCommandTemp);
 			}
 			else if(commandData[j][i].commandType==openingCommandType){

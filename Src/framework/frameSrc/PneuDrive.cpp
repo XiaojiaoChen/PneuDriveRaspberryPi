@@ -21,7 +21,7 @@ PNEUDRIVE::PNEUDRIVE(int chambernum)
 		chambers[i]=new CHAMBER(2*i,2*i+1,i);
 	}
 	pressureDeadZone = 2000;
-    frequency = 10;
+    frequency = 40;
 }
 
 
