@@ -117,10 +117,27 @@ void CHAMBER::attachSensor(int AnalogPort)
 {
 	pressureSensor.attach(AnalogPort);
 }
+void CHAMBER::zeroPressure(){
+	pressureOffset = pressureRaw;
+}
 
 float CHAMBER::readPressure(){
-	//pressure = pressureSensor.read();
-	//pressure = pressureSensorspi.read();
+
+	/************************customize the correct pressure souce according to the project**********/
+
+	//pressureRaw = pressureSensor.read();
+	//pressureRaw = pressureSensorspi.read();
+	pressure=pressureRaw-pressureOffset;
+
+	return pressure;
+}
+
+float CHAMBER::readPressureExt(float pressureExt){
+
+	/************************read from external pressure source**********/
+	pressureRaw=pressureExt;
+	pressure=pressureRaw-pressureOffset;
+
 	return pressure;
 }
 

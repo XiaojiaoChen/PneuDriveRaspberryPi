@@ -182,7 +182,7 @@ static HAL_StatusTypeDef my_HAL_CAN_GetRxMessage(CAN_HandleTypeDef *hcan, uint32
 	int i = pHeader->StdId/6;
     int j = pHeader->StdId%6;
     softArm.actuatorOnline[j][j]=10;
-    aData=(uint8_t *)(&softArm.sensorData[i][j]);
+    aData=(uint8_t *)(&softArm.sensorDataBuffer[i][j]);
     /****************************************************************/
 
     /* Get the data */
@@ -194,6 +194,12 @@ static HAL_StatusTypeDef my_HAL_CAN_GetRxMessage(CAN_HandleTypeDef *hcan, uint32
     aData[5] = (uint8_t)((CAN_RDH0R_DATA5 & hcan->Instance->sFIFOMailBox[RxFifo].RDHR) >> CAN_RDH0R_DATA5_Pos);
     aData[6] = (uint8_t)((CAN_RDH0R_DATA6 & hcan->Instance->sFIFOMailBox[RxFifo].RDHR) >> CAN_RDH0R_DATA6_Pos);
     aData[7] = (uint8_t)((CAN_RDH0R_DATA7 & hcan->Instance->sFIFOMailBox[RxFifo].RDHR) >> CAN_RDH0R_DATA7_Pos);
+
+
+    /**********************  Added Docode the sensor Data to SPI buffer*******************************/
+    decodeSensorData(&softArm.sensorDataBuffer[i][j],&(softArm.sensorData.data[i][j]));
+    /*******************************************************************/
+
 
     /* Release the FIFO */
     if (RxFifo == CAN_RX_FIFO0) /* Rx element is assigned to Rx FIFO 0 */

@@ -19,7 +19,7 @@ SOFT_ARM::SOFT_ARM()
 }
 
 
-void SOFT_ARM::setupChamberPWMPort()
+void SOFT_ARM::setupChamberPorts()
 {
 	/*Every actuator is refered to with two numbers, segNum(0-8) and bellowNum(0-5)*/
 
@@ -36,34 +36,50 @@ void SOFT_ARM::setupChamberPWMPort()
 		}
 	}
 
-
-
 }
 
+void SOFT_ARM::zeroPressureAll() {
+	for(int j=0;j<SEGMENTNUM;j++){
+		for(int i=0;i<BELLOWNUM;i++){
+			armSegments[j].bellows[i]->zeroPressure();
+		}
+	}
+}
 
+void SOFT_ARM::readPressureAll()
+{
+	//Read pressure information from sensorData(from CANbus) as the Chamber's pressure
+	for(int j=0;j<SEGMENTNUM;j++){
+		for(int i=0;i<BELLOWNUM;i++){
+			float pressureGaugeCan=sensorData.data[j][i].pressure*100;  //gauge Pa
+			armSegments[j].bellows[i]->readPressureExt(pressureGaugeCan);
+		}
+	}
+}
 
 void SOFT_ARM::writeCommandAll()
 {
 
 	for(int j=0;j<SEGMENTNUM;j++){
 		SOFT_ARM_SEGMENT* armSegCur=&armSegments[j];
-		for(int i=0;i<BELLOWNUM;i++)
-		{
+		for(int i=0;i<BELLOWNUM;i++){
 			CHAMBER *bellowCur=armSegCur->bellows[i];
-			armSegCur->bellows[i]->pressure=sensorData[j][i].pressure*1000-P_ATM; //gauge PA
 
-			if(commandData[j][i].commandType==pressureCommandType){
-				float pressureCommandTemp=commandData[j][i].values[0]*1000;//gauge PA
+			//write pressure command from commandData to the chamber
+			if(commandData.data[j][i].commandType==pressureCommandType){
+				float pressureCommandTemp=commandData.data[j][i].values[0]*1000;//gauge PA
 				bellowCur->writePressure(pressureCommandTemp);
 			}
-			else if(commandData[j][i].commandType==openingCommandType){
-				float openingCommandTemp=((int16_t)commandData[j][i].values[0])*3.0517578125e-5;//values[0]/32767
+			else if(commandData.data[j][i].commandType==openingCommandType){
+				float openingCommandTemp=((int16_t)commandData.data[j][i].values[0])*3.0517578125e-5;//values[0]/32767
 				bellowCur->writeOpening(openingCommandTemp);
 			}
 		}
 	}
 }
 
-
-
-
+void SOFT_ARM::execInfoCommand(char *infoBuf){
+	if(infoBuf[0]=='z'){
+		zeroPressureAll();
+	}
+}

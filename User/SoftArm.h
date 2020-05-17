@@ -20,7 +20,7 @@ extern "C" {
 
 enum COMMAND_MODE{
 	openingCommandType,
-	pressureCommandType
+	pressureCommandType,
 
 };
 
@@ -29,20 +29,44 @@ enum COMMAND_MODE{
 #define P_ATM 101000
 
 
+typedef struct SPIDATA_T_TAG{
+	SENSORDATA data[SEGMENTNUM][BELLOWNUM];
+	char infos[10];
+}SPIDATA_T;
+
+typedef struct SPIDATA_R_TAG{
+	COMMANDDATA data[SEGMENTNUM][BELLOWNUM];
+	char infos[10];
+}SPIDATA_R;
+
+
 class SOFT_ARM{
 public:
 	SOFT_ARM();
 
 	SOFT_ARM_SEGMENT armSegments[SEGMENTNUM];
 
-	struct SENSORDATA sensorData[SEGMENTNUM][BELLOWNUM];
-	struct COMMANDDATA commandData[SEGMENTNUM][BELLOWNUM];
-	struct COMMANDDATA commandDataBuffer[SEGMENTNUM][BELLOWNUM];
+	//local sensor and command buffer
+	SENSORDATACOMPACT sensorDataBuffer[SEGMENTNUM][BELLOWNUM];
+	SPIDATA_R commandDataBuffer;
+
+	//SPI transfer and receive buffer
+	SPIDATA_T sensorData;
+	SPIDATA_R commandData;
+
 	uint8_t actuatorOnline[SEGMENTNUM][BELLOWNUM];
+	int16_t pressureOffset[SEGMENTNUM][BELLOWNUM];
+	int16_t laserOffset[SEGMENTNUM][BELLOWNUM];
+
+
 	uint8_t canBusCommand[8];
-	void setupChamberPWMPort();
+	void setupChamberPorts();
+	void readPressureAll();
+	void zeroPressureAll();
 	void writeCommandAll();
+	void execInfoCommand(char *);
 };
+
 
 
 

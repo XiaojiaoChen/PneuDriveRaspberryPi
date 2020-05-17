@@ -346,7 +346,6 @@
 "User/CANbus.o"
 "User/SoftArm.o"
 "User/SoftArmSegment.o"
-"User/Template.o"
 "User/messages.o"
 "User/myMain.o"
 "User/spiSlave.o"

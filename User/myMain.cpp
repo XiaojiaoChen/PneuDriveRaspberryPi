@@ -22,7 +22,7 @@ void setup() {
 	setPeriodSendLoop(100);
 
 	/*soft arm chambers' PWM port mapping*/
-	softArm.setupChamberPWMPort();
+	softArm.setupChamberPorts();
 
 	/*start canBus receive*/
 	canConfig();
@@ -34,11 +34,11 @@ void setup() {
 
 void loop() {
 
-	/**********The sensor feedback are automatically received from nodes by CAN,
-	 and stored in sensorData[segNum][bellowNum] in softArm.*/
+	/***************Handle string commands from the raspberry pi********************/
+	softArm.execInfoCommand(softArm.commandData.infos);
 
-	/**********The commands are automatically updated from SPI1 using DMA,
-	 and stored in commandData[segNum][bellowNum] in softArm.*/
+	//update chamber's pressure from the CANbus************************/
+	softArm.readPressureAll();
 
 	/**Write the command of each chamber, either pressure or opening type*/
 	softArm.writeCommandAll();
@@ -53,18 +53,18 @@ void serialDisplay() {
 	for (int i = 0; i < SEGMENTNUM; i++) {
 		printf(
 				"     %hd:%hd   %hd:%hd   %hd:%hd   %hd:%hd   %hd:%hd   %hd:%hd    |     %hu,  %hu, %hu, %hu, %hu, %hu\r\n",
-				softArm.commandData[i][0].values[0],softArm.sensorData[i][0].pressure-P_ATM/1000,
-				softArm.commandData[i][1].values[0],softArm.sensorData[i][1].pressure-P_ATM/1000,
-				softArm.commandData[i][2].values[0],softArm.sensorData[i][2].pressure-P_ATM/1000,
-				softArm.commandData[i][3].values[0],softArm.sensorData[i][3].pressure-P_ATM/1000,
-				softArm.commandData[i][4].values[0],softArm.sensorData[i][4].pressure-P_ATM/1000,
-				softArm.commandData[i][5].values[0],softArm.sensorData[i][5].pressure-P_ATM/1000,
-				softArm.sensorData[i][0].distance,
-				softArm.sensorData[i][1].distance,
-				softArm.sensorData[i][2].distance,
-				softArm.sensorData[i][3].distance,
-				softArm.sensorData[i][4].distance,
-				softArm.sensorData[i][5].distance);
+				softArm.commandData.data[i][0].values[0],(int)(softArm.armSegments[i].bellows[0]->pressure),
+				softArm.commandData.data[i][1].values[0],(int)(softArm.armSegments[i].bellows[1]->pressure),
+				softArm.commandData.data[i][2].values[0],(int)(softArm.armSegments[i].bellows[2]->pressure),
+				softArm.commandData.data[i][3].values[0],(int)(softArm.armSegments[i].bellows[3]->pressure),
+				softArm.commandData.data[i][4].values[0],(int)(softArm.armSegments[i].bellows[4]->pressure),
+				softArm.commandData.data[i][5].values[0],(int)(softArm.armSegments[i].bellows[5]->pressure),
+				softArm.sensorData.data[i][0].distance,
+				softArm.sensorData.data[i][1].distance,
+				softArm.sensorData.data[i][2].distance,
+				softArm.sensorData.data[i][3].distance,
+				softArm.sensorData.data[i][4].distance,
+				softArm.sensorData.data[i][5].distance);
 	}
 }
 
@@ -73,11 +73,11 @@ void serialReceiveCallback(char *pSerialReceiveBuffer) {
 
 	if (pSerialReceiveBuffer[0] == 'k') {
 		//	/**Write command for each actuator, q&r of kalman filter for laser, */
-		softArm.canBusCommand[0] = 0xFF;
-		softArm.canBusCommand[1] = 0xEF;
-		softArm.canBusCommand[2] = 0xFE;
-		softArm.canBusCommand[3] = 0xAF;
-		canSend();
+//		softArm.canBusCommand[0] = 0xFF;
+//		softArm.canBusCommand[1] = 0xEF;
+//		softArm.canBusCommand[2] = 0xFE;
+//		softArm.canBusCommand[3] = 0xAF;
+//		canSend();
 	}
 }
 
