@@ -1,3 +1,6 @@
-SoftArm.cpp:14:1:SOFT_ARM::SOFT_ARM()	24	static
-SoftArm.cpp:20:6:void SOFT_ARM::setupChamberPWMPort()	40	static
-SoftArm.cpp:44:6:void SOFT_ARM::writeCommandAll()	56	static
+SoftArm.cpp:16:1:SOFT_ARM::SOFT_ARM()	24	static
+SoftArm.cpp:22:6:void SOFT_ARM::setupChamberPorts()	40	static
+SoftArm.cpp:41:6:void SOFT_ARM::zeroPressureAll()	24	static
+SoftArm.cpp:49:6:void SOFT_ARM::readPressureAll()	32	static
+SoftArm.cpp:60:6:void SOFT_ARM::writeCommandAll()	40	static
+SoftArm.cpp:81:6:void SOFT_ARM::execInfoCommand(char*)	16	static

@@ -30,6 +30,7 @@ public:
 	void attachSensor(int AnalogPort);
 
 	float readPressure();
+	float readPressureExt(float pressureExt);
 	float filterPressure();
 	void writePressure(float pressureCommand);
 	void writePressure(float pNom,float pNomDot);
@@ -63,6 +64,9 @@ public:
 	float pressure;
 	float pressureFil;
 	float pressuredot;
+	float pressureRaw;
+	float pressureOffset;
+
 	float filterBeta;
 	float pressureCommand;
 	int inflatingFlag;
@@ -77,6 +81,7 @@ public:
 	float positionTable[13];
 	float pressure2position(float);
 	float position2pressure(float);
+	void zeroPressure();
 	void setValveOpeningLimit(float ominN,float omaxN,float ominP,float omaxP);
 private:
 	float length;

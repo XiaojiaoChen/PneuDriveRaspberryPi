@@ -16,15 +16,15 @@ extern "C" {
 
 /*If this value is 1, the pressure is encoded by 12 bit, with unit hPa. The quaternion is encoded by 14 bit for each component.
  *If this value is 0, the pressure is encoded by 9 bit, with unit KPa. The quaternion is encoded by 15 bit for each component.*/
-#define COMPACT_VERSION_PRESSURE_HPA  0
+#define COMPACT_VERSION_PRESSURE_HPA  1
 
 
-struct QUATERNION{
+typedef struct QUATERNION_TAG{
  /*unCompressed Quaternion*/
  int16_t imuData[4];
-};
+}QUATERNION;
 
-struct QUATERNIONCOMPACT {
+typedef struct QUATERNIONCOMPACT_TAG {
 #if COMPACT_VERSION_PRESSURE_HPA==1
 /* Compressed Quaternion by omitting the largest component, Other component limited to 14bit.
  * maxLocHigh and maxLocLow specify the location of the max component(omitted one) (default:q=w+xi+yj+zk)
@@ -37,28 +37,39 @@ struct QUATERNIONCOMPACT {
 	uint16_t imuData1 :15, maxLocLow :1;
 	uint16_t imuData2 :15, maxSign :1;
 #endif
-};
+}QUATERNIONCOMPACT;
 
-struct SENSORDATA {
+typedef struct SENSORDATACOMPACT_TAG {
 #if COMPACT_VERSION_PRESSURE_HPA==1
 	uint16_t pressure:12, distance:4;
 #else
 	uint16_t pressure:9, distance:7;
 #endif
-	struct QUATERNIONCOMPACT quaternionCom;
-};
+	QUATERNIONCOMPACT quaternionCom;
+}SENSORDATACOMPACT;
 
-struct COMMANDDATA {
-	int16_t values[3];
+typedef struct SENSORDATA_TAG {
+	int16_t pressure;
+	uint16_t distance;
+	QUATERNION quaternion;
+}SENSORDATA;
+
+typedef struct COMMANDDATA_TAG {
+	int16_t values[5];
 	uint16_t commandType;
-};
+}COMMANDDATA;
+
+
+
 
 
 /*packQ should be used in sender, i.e. actuator nodes*/
-void packQuaternion(struct QUATERNION *qOri, struct QUATERNIONCOMPACT *qCom);
+void packQuaternion(QUATERNION *qOri, QUATERNIONCOMPACT *qCom);
 
 /*unpackQ should be used in decoder, i.e. PC host*/
-void unpackQuaternion(struct QUATERNIONCOMPACT *qCom, struct QUATERNION *qOri);
+void unpackQuaternion(QUATERNIONCOMPACT *qCom, QUATERNION *qOri);
+
+void decodeSensorData(SENSORDATACOMPACT*,SENSORDATA*);
 
 #ifdef __cplusplus
 }

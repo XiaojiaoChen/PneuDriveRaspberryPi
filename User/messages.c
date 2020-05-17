@@ -16,7 +16,7 @@
 
 static unsigned int fastSqrt32(unsigned long n);
 
-void packQuaternion(struct QUATERNION *qOri,struct QUATERNIONCOMPACT *qCom){
+void packQuaternion(QUATERNION *qOri,QUATERNIONCOMPACT *qCom){
 	uint16_t maxLoc=0;
 	for(int i=0;i<4;i++){
 		if(i>0 && (abs(qOri->imuData[i])>abs(qOri->imuData[maxLoc])))
@@ -48,7 +48,7 @@ void packQuaternion(struct QUATERNION *qOri,struct QUATERNIONCOMPACT *qCom){
 	qCom->maxSign=((uint16_t)(((uint16_t)qOri->imuData[maxLoc])&0x8000))>>15;
 }
 
-void unpackQuaternion(struct QUATERNIONCOMPACT *qCom,struct QUATERNION *qOri){
+void unpackQuaternion(QUATERNIONCOMPACT *qCom,QUATERNION *qOri){
 	int32_t lastNumOri=0;
 	uint16_t maxLoc=(uint16_t)(qCom->maxLocHigh<<1 | qCom->maxLocLow);
 	int16_t qRes0=(int16_t)(((uint16_t)qCom->imuData0)<<COMPACT_SHIFT_BIT);
@@ -87,6 +87,23 @@ void unpackQuaternion(struct QUATERNIONCOMPACT *qCom,struct QUATERNION *qOri){
 }
 
 
+void decodeSensorData(SENSORDATACOMPACT *scom, SENSORDATA *s) {
+
+
+#if COMPACT_VERSION_PRESSURE_HPA==1
+	s->pressure=scom->pressure;    //absolute hpa
+	s->distance= ((uint16_t)(scom->distance<<3)
+			+(uint16_t)(scom->quaternionCom.distanceBit2<<2)
+			+(uint16_t)(scom->quaternionCom.distanceBit1<<1)
+			+(uint16_t)(scom->quaternionCom.distanceBit0));
+#else
+	s->pressure=scom->pressure;    //absolute
+	s->distance=scom->distance;
+#endif
+	unpackQuaternion(&(scom->quaternionCom),&(s->quaternion));
+}
+
+
 static unsigned int fastSqrt32(unsigned long n)
 {
     unsigned int c = 0x8000;
@@ -101,3 +118,5 @@ static unsigned int fastSqrt32(unsigned long n)
         g |= c;
     }
 }
+
+
