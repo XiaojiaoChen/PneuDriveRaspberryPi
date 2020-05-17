@@ -25,7 +25,7 @@ enum COMMAND_MODE{
 };
 
 
-#define SEGMENTNUM 9
+#define SEGMENTNUM 1
 #define P_ATM 101000
 
 
@@ -61,7 +61,7 @@ public:
 
 	uint8_t canBusCommand[8];
 	void setupChamberPorts();
-	void readPressureAll();
+	void readSensorAll();
 	void zeroPressureAll();
 	void writeCommandAll();
 	void execInfoCommand(char *);

@@ -46,14 +46,12 @@ void SOFT_ARM::zeroPressureAll() {
 	}
 }
 
-void SOFT_ARM::readPressureAll()
+void SOFT_ARM::readSensorAll()
 {
 	//Read pressure information from sensorData(from CANbus) as the Chamber's pressure
 	for(int j=0;j<SEGMENTNUM;j++){
-		for(int i=0;i<BELLOWNUM;i++){
-			float pressureGaugeCan=sensorData.data[j][i].pressure*100;  //gauge Pa
-			armSegments[j].bellows[i]->readPressureExt(pressureGaugeCan);
-		}
+			armSegments[j].readPressureAll();
+			armSegments[j].readLength();
 	}
 }
 

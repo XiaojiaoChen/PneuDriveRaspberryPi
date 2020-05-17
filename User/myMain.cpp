@@ -38,7 +38,9 @@ void loop() {
 	softArm.execInfoCommand(softArm.commandData.infos);
 
 	//update chamber's pressure from the CANbus************************/
-	softArm.readPressureAll();
+	softArm.readSensorAll();
+
+
 
 	/**Write the command of each chamber, either pressure or opening type*/
 	softArm.writeCommandAll();
@@ -69,7 +71,7 @@ void serialDisplay() {
 }
 
 //called when serial input receive string with ending '\r\n'
-void serialReceiveCallback(char *pSerialReceiveBuffer) {
+void serial3Callback(char *pSerialReceiveBuffer) {
 
 	if (pSerialReceiveBuffer[0] == 'k') {
 		//	/**Write command for each actuator, q&r of kalman filter for laser, */
@@ -81,3 +83,8 @@ void serialReceiveCallback(char *pSerialReceiveBuffer) {
 	}
 }
 
+void serial2Callback(char *pSerialReceiveBuffer) {
+	for(int j=0;j<SEGMENTNUM;j++){
+		softArm.armSegments[j].readIMU(pSerialReceiveBuffer);
+	}
+}

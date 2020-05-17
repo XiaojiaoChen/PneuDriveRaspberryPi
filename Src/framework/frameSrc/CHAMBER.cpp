@@ -125,7 +125,7 @@ float CHAMBER::readPressure(){
 
 	/************************customize the correct pressure souce according to the project**********/
 
-	//pressureRaw = pressureSensor.read();
+	pressureRaw = pressureSensor.read();
 	//pressureRaw = pressureSensorspi.read();
 	pressure=pressureRaw-pressureOffset;
 

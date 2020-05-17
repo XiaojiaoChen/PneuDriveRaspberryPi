@@ -176,7 +176,7 @@ void controlTaskFunc(void const * argument)
 			ADBoard_updateVoltage();
 	#endif
 			//terminal command process
-			Usart_TerminalHandler();
+			Usart_ReceiveHandler();
 
 			//User loop function
 	 if(++loopTick>=globalPeriodControlLoop)

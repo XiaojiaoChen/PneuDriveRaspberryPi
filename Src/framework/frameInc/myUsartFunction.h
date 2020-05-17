@@ -28,10 +28,9 @@ typedef struct {
 }__attribute__((packed)) RECEIVEBINSTRUCT;
 
 
-
-
-
 typedef struct UART_DEVICE_STRUCT{
+	UART_HandleTypeDef *huart;
+
 	uint8_t TxBuf[UART_TX_BUF_NUM][UART_TX_BUF_SIZE];  /*TxBuffer*/
 	uint16_t consumerTxBufNum;
 	uint16_t producerTxBufNum;
@@ -57,21 +56,26 @@ typedef struct UART_DEVICE_STRUCT{
 
 	uint32_t TxStart;
 	uint32_t TxEnd;
-	UART_HandleTypeDef *huart;
+
 	uint32_t lastTxTime;
 	uint32_t lastTxCount;
-
 }UART_DEVICE;
-extern UART_DEVICE Usart3Device;
-extern UART_DEVICE Usart1Device;
-extern UART_DEVICE Usart2Device;
 
 void my_UsartInit();			/*put in the Initialization*/
-void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart);/*put in the ISR*/
-void Usart_TerminalHandler(void);						/*put In the polling loop*/
-void myUsart1IRQ(void);
-void printfBinPush(int16_t dat);
-void printfBinFlush();
+void myUsartDMAIRQ(UART_HandleTypeDef *huart);/*put in the ISR*/
+void Usart_ReceiveHandler(void);/*put In the polling loop*/
+void myUsartIntIRQ(UART_HandleTypeDef *huart);/*put in the ISR*/
+
+/*Call
+ *	   serial1Callback(char *buf)
+ *or   serial2Callback(char *buf)
+ *or   serial3Callback(char *buf)
+ * to access the received string.
+ */
+
+
+
+
 #ifdef __cplusplus
 }
 #endif

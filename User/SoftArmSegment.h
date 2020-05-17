@@ -18,6 +18,32 @@ extern "C" {
 
 #define BELLOWNUM 6
 
+typedef struct IMUFRAME_STRUCT{
+	uint8_t headerEuler[2];
+	int16_t Rx;
+	int16_t Ry;
+	int16_t Rz;
+	int16_t temperature;
+	uint8_t chekcum1;
+	uint8_t headerQuotanion[2];
+	int16_t q0;
+	int16_t q1;
+	int16_t q2;
+	int16_t q3;
+	uint8_t chekcum2;
+}__attribute__((packed)) IMUFRAME;
+
+typedef struct IMUDATA_STRUCT{
+	float angleX;
+	float angleY;
+	float angleZ;
+	float q0;
+	float q1;
+	float q2;
+	float q3;
+}__attribute__((packed)) IMUDATA;
+
+
 class SOFT_ARM_SEGMENT{
 public:
 	SOFT_ARM_SEGMENT(int num=BELLOWNUM);
@@ -49,6 +75,17 @@ public:
 
 	int frequencyDirty;
 
+
+	float readLength();
+	void readIMU(char *pBuffer);
+	void quatern2AB();
+
+	IMUDATA imuData;
+	int lengthAnalogPort;
+	float alpha;
+	float beta;
+	float length;
+	float lengthRaw;
 };
 
 #ifdef __cplusplus
