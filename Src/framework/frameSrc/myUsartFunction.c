@@ -14,9 +14,36 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+typedef enum USARTMode_ENUM{
+	IntMode,
+	DMAMode
+}USARTMode;
+
+//To PC usb
 UART_DEVICE Usart3Device;
+
+//To raspberry pi's usart 1
 UART_DEVICE Usart1Device;
+
+//for user usage.
 UART_DEVICE Usart2Device;
+
+
+static void myInitUsartMode(UART_HandleTypeDef *huart,USARTMode usartMode);
+static void printfBin_appendData(int16_t dat);
+static void printfBin();
+static void printfBin_init();
+
+static UART_DEVICE *getUsartDevice(UART_HandleTypeDef *huart){
+	if(huart==&huart1)
+		return &Usart1Device;
+	if(huart==&huart2)
+		return &Usart2Device;
+	if(huart==&huart3)
+		return &Usart3Device;
+	return &Usart3Device;
+}
+
 
 typedef struct
 {
@@ -30,7 +57,7 @@ typedef struct
  * char: Z    Z     	    data  \r  	\n
  */
 
-static PRINTFBINSTRUCT printfBinStruct;
+
 
 
 /*This file enables to use printf() to output strings to a uart:
@@ -53,113 +80,54 @@ static PRINTFBINSTRUCT printfBinStruct;
  *
  */
 
-
-
-
-void usart1CommandHandler()
-{
-	serialPort1Callback((char *)Usart1Device.RxBuf);
-
-}
-void usart3CommandHandler()
-{
-	//since this termination is triggered by IDLE LINE, we keep looking for end of line '\r\n'
-	int len=Usart3Device.countRxLineBuf+Usart3Device.countRxBuf;
-
-	//If overflow Clear
-	if(len>UART_RX_BUF_SIZE)
-	{
-		memset(Usart3Device.RxLineBuf,0,UART_RX_BUF_SIZE);
-		Usart3Device.pRxLineBuf=Usart3Device.RxLineBuf;
-		Usart3Device.countRxLineBuf=0;
-	}
-	else{
-		//buffer to line
-		memcpy(&(Usart3Device.RxLineBuf[Usart3Device.countRxLineBuf]),Usart3Device.RxBuf,Usart3Device.countRxBuf);
-		Usart3Device.pRxLineBuf+=Usart3Device.countRxBuf;
-		Usart3Device.countRxLineBuf=len;
-
-		//if end of line
-		if (Usart3Device.RxLineBuf[Usart3Device.countRxLineBuf-1]=='\n')
-		{
-			serialReceiveCallback((char *)Usart3Device.RxLineBuf);
-			memset(Usart3Device.RxLineBuf,0,len);
-			Usart3Device.pRxLineBuf=Usart3Device.RxLineBuf;
-			Usart3Device.countRxLineBuf=0;
-		}
-	}
-
-}
-
-void usart2CommandHandler()
-{
-	//since this termination is triggered by IDLE LINE, we want to make sure it has the right number of bytes
-		serialPort2Callback((char *)Usart2Device.RxBuf);
-}
-void UartCommandHandler(UART_DEVICE *UsartDevice)
-{
-	if(UsartDevice == &Usart3Device)
-		usart3CommandHandler();
-	else if(UsartDevice == &Usart2Device)
-		usart2CommandHandler();
-}
-
-
 /*put this function in the main.c for initilization*/
 void my_UsartInit()
 {
 
-	memset(&printfBinStruct,0,sizeof(PRINTFBINSTRUCT));
-	printfBinStruct.header[0]=0x5a;
-	printfBinStruct.header[1]=0x5a;
-	printfBinStruct.header[2]=0xa5;
-	printfBinStruct.header[3]=0xa5;
+	 //Usart 1 is connected to raspberry pi on its usart1
+	 myInitUsartMode(&huart1,IntMode);
 
-	printfBinStruct.pData=printfBinStruct.data;
+	 //for application use
+	 myInitUsartMode(&huart2,IntMode);
 
-	 memset(&Usart3Device,0,sizeof(Usart3Device));
-	 Usart3Device.huart = &huart3;
-	 Usart3Device.pRxBuf = Usart3Device.RxBuf;
-	 Usart3Device.pRxLineBuf=Usart3Device.RxLineBuf;
-	 Usart3Device.receveBinPtr = (RECEIVEBINSTRUCT *)Usart3Device.RxBuf;
-	 /*get ready for receive*/
-	 HAL_UART_Receive_DMA(Usart3Device.huart, Usart3Device.RxBuf, UART_RX_BUF_SIZE-1);
+	 //Usart 3 is connecting through usb by defaut, configured to DMA mode
+	 myInitUsartMode(&huart3,DMAMode);
 
-	 /*Enable USART_Rx IDLE Detection to stop USART1_Rx_DMA*/
-	 __HAL_UART_ENABLE_IT(Usart3Device.huart, UART_IT_IDLE);
-
-	// memset(&Usart2Device,0,sizeof(Usart2Device));
-	 Usart2Device.huart = &huart2;
-	 Usart2Device.pRxBuf = Usart2Device.RxBuf;
-	 Usart2Device.pRxLineBuf=Usart2Device.RxLineBuf;
-	 Usart2Device.receveBinPtr = (RECEIVEBINSTRUCT *)Usart2Device.RxBuf;
-	 /*get ready for receive*/
-	 HAL_UART_Receive_DMA(Usart2Device.huart, Usart2Device.RxBuf, UART_RX_BUF_SIZE-1);
-
-	 /*Enable USART_Rx IDLE Detection to stop USART1_Rx_DMA*/
-	 __HAL_UART_ENABLE_IT(Usart2Device.huart, UART_IT_IDLE);
-
-	 memset(&Usart1Device,0,sizeof(Usart1Device));
-	 Usart1Device.huart = &huart1;
-	 Usart1Device.pRxBuf = Usart1Device.RxBuf;
-	 __HAL_UART_ENABLE_IT(&huart1,UART_IT_RXNE);
-
+	 //Enable printf Binany
+	 printfBin_init();
 }
 
+void myInitUsartMode(UART_HandleTypeDef *huart,USARTMode usartMode){
+	UART_DEVICE *uartDev=getUsartDevice(huart);
+	memset(uartDev,0,sizeof(UART_DEVICE));
+	uartDev->huart = huart;
+	uartDev->pRxBuf = uartDev->RxBuf;
+	uartDev->pRxLineBuf=uartDev->RxLineBuf;
+	uartDev->receveBinPtr = (RECEIVEBINSTRUCT *)uartDev->RxBuf;
+	if(usartMode==IntMode){
+		 __HAL_UART_ENABLE_IT(huart,UART_IT_RXNE);
+	}
+	else if(usartMode==DMAMode){
+
+		 /*get ready for receive*/
+		 HAL_UART_Receive_DMA(uartDev->huart, uartDev->RxBuf, UART_RX_BUF_SIZE-1);
+
+		 /*Enable USART_Rx IDLE Detection to stop USART1_Rx_DMA*/
+		 __HAL_UART_ENABLE_IT(uartDev->huart, UART_IT_IDLE);
+	}
+}
 
 /*put this function in stm32f7xx_it.c as below
-void USART3_IRQHandler(void)
-{
-  HAL_UART_RxIdleCallback(UsartDevice->huart);
-  HAL_UART_IRQHandler(&huart3);
-}
+	void USART3_IRQHandler(void){
+		HAL_UART_RxIdleCallback(&huart3);
+		 HAL_UART_IRQHandler(&huart3);
+	}
 */
-
-void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart)
+void myUsartDMAIRQ(UART_HandleTypeDef *huart)
 {
+	UART_DEVICE *uartDev=getUsartDevice(huart);
 	 uint32_t tmp_flag = __HAL_UART_GET_FLAG(huart, UART_FLAG_IDLE);
 	 uint32_t tmp_it_source = __HAL_UART_GET_IT_SOURCE(huart, UART_IT_IDLE);
-
 	 /* UART RX Idle interrupt*/
 	 if((tmp_flag != RESET) && (tmp_it_source != RESET)){
 
@@ -167,15 +135,9 @@ void HAL_UART_RxIdleCallback(UART_HandleTypeDef *huart)
 		__HAL_UART_CLEAR_IDLEFLAG(huart);
 
 		/*receive flag*/
-		if(huart == &huart3)
-			Usart3Device.Received = 1;
-		else if(huart == &huart2)
-			Usart2Device.Received = 1;
-
+		uartDev->Received = 1;
 		/*We stop the DMA in the polling task, not here, since some data are still on the fly now*/
-
 	}
-
 }
 
 /*Redirect printf() by implementing (weak) _write function.
@@ -214,81 +176,66 @@ int _write(int file, char *pSrc, int len)
 	return len;
 }
 
-//input: array pointer, and data number
-//function: add header and tail, send into buffer
-void printfBinFlush()
-{
-int len=(printfBinStruct.pData-printfBinStruct.data)*sizeof(int16_t);
-char *pChar=(char *)(printfBinStruct.pData);
-*(pChar)++='\r';
-*(pChar)++='\n';
-len= len+6;
-printfBinStruct.pData = printfBinStruct.data;
-_write(0,(char *)(&printfBinStruct),len);
-}
 
-void printfBinPush(int16_t dat)
-{
-*(printfBinStruct.pData)++=dat;
-}
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-	//printf("RxCplCall_Test\r\n");
-}
 
 /*this function would overwrite HAL's weak HAL_UART_TxCpltCallback*/
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
+	UART_DEVICE *uartDev=getUsartDevice(huart);
 	 /*update information*/
-	 Usart3Device.TxEnd = micros();
-	 Usart3Device.lastTxTime = Usart3Device.TxEnd - Usart3Device.TxStart;
-	 Usart3Device.lastTxCount = Usart3Device.countTxBuf[Usart3Device.consumerTxBufNum];
+	 uartDev->TxEnd = micros();
+	 uartDev->lastTxTime = uartDev->TxEnd - uartDev->TxStart;
+	 uartDev->lastTxCount = uartDev->countTxBuf[uartDev->consumerTxBufNum];
 
 	/*One consumption done. move consumer forward*/
-	Usart3Device.consumerTxBufNum++;
-	Usart3Device.consumerTxBufNum%=UART_TX_BUF_NUM;
+	uartDev->consumerTxBufNum++;
+	uartDev->consumerTxBufNum%=UART_TX_BUF_NUM;
 
 	/*reduce one bufferedTxNum*/
-	 Usart3Device.bufferedTxNum--;
+	 uartDev->bufferedTxNum--;
 
 	/*If it is still positive, go on consume next*/
-	if(Usart3Device.bufferedTxNum>0){
-		Usart3Device.TxStart = micros();
-		uint8_t *px = &Usart3Device.TxBuf[Usart3Device.consumerTxBufNum][0];
-		HAL_UART_Transmit_DMA(Usart3Device.huart,px,Usart3Device.countTxBuf[Usart3Device.consumerTxBufNum]);
+	if(uartDev->bufferedTxNum>0){
+		uartDev->TxStart = micros();
+		uint8_t *px = &uartDev->TxBuf[uartDev->consumerTxBufNum][0];
+		HAL_UART_Transmit_DMA(uartDev->huart,px,uartDev->countTxBuf[uartDev->consumerTxBufNum]);
 	}
 }
 
-
-void myUsart1IRQ()
-{
-
- 	if(__HAL_UART_GET_FLAG(&huart1, UART_FLAG_RXNE)!=RESET)   //receive interrupt
+/*put this function in stm32f7xx_it.c as below
+	void USART1_IRQHandler(void)
 	{
-		*(Usart1Device.pRxBuf)=(uint8_t)(huart1.Instance->RDR & (uint8_t)0x00FF);  //read and clear flag
-		if(*(Usart1Device.pRxBuf)==0x0a) // if current char is 0x0a, take care. If not, go on receiving.
+	  myUsartIntIRQ(&huart1);
+	  HAL_UART_IRQHandler(&huart1);
+	}
+*/
+void myUsartIntIRQ(UART_HandleTypeDef *huart)
+{
+	UART_DEVICE *uartDev=getUsartDevice(huart);
+ 	if(__HAL_UART_GET_FLAG(huart, UART_FLAG_RXNE)!=RESET)   //receive interrupt
+	{
+		*(uartDev->pRxBuf)=(uint8_t)(huart->Instance->RDR & (uint8_t)0x00FF);  //read and clear flag
+		if(*(uartDev->pRxBuf)==0x0a) // if current char is 0x0a, take care. If not, go on receiving.
 		{
-			if((Usart1Device.pRxBuf)!=(Usart1Device.RxBuf)) // if '0x0a' is not in the beginning
+			if((uartDev->pRxBuf)!=(uartDev->RxBuf)) // if '0x0a' is not in the beginning
 			{
-				if(*(Usart1Device.pRxBuf-1)==0x0d)// if previous char is 0x0d, legal end.
+				if(*(uartDev->pRxBuf-1)==0x0d)// if previous char is 0x0d, legal end.
 			    {
-					Usart1Device.Received = 1;
+					uartDev->Received = 1;
 				}
 				else//if previous char is not 0x0d, illegal end. Reset Buffer.
 				{
-					memset(Usart1Device.RxBuf,0,UART_RX_BUF_SIZE);
-					Usart1Device.pRxBuf=Usart1Device.RxBuf;
+					memset(uartDev->RxBuf,0,UART_RX_BUF_SIZE);
+					uartDev->pRxBuf=uartDev->RxBuf;
 				}
-
 			}//if '0x0a' is received in the beginning. do nothing.
 		}
-		else Usart1Device.pRxBuf++;
+		else uartDev->pRxBuf++;
 	}
-
 }
 
 
-void UsartDMAIdleHandler(UART_DEVICE *UsartDevice)
+void UsartDMAReceiveHandler(UART_DEVICE *UsartDevice)
 {
 	/********************************Usart DMA reception****************************/
 		/*Only process with idle receiving detection*/
@@ -316,8 +263,32 @@ void UsartDMAIdleHandler(UART_DEVICE *UsartDevice)
 				UsartDevice->huart->RxState = HAL_UART_STATE_READY;
 			}
 
-			/*Process commands*/
-			UartCommandHandler(UsartDevice);
+			/*Process commands buffer*/
+			//since this termination is triggered by IDLE LINE, we keep looking for end of line '\r\n'
+			int len=UsartDevice->countRxLineBuf+UsartDevice->countRxBuf;
+
+			//If overflow Clear
+			if(len>UART_RX_BUF_SIZE)
+			{
+				memset(UsartDevice->RxLineBuf,0,UART_RX_BUF_SIZE);
+				UsartDevice->pRxLineBuf=UsartDevice->RxLineBuf;
+				UsartDevice->countRxLineBuf=0;
+			}
+			else{
+				//buffer to line
+				memcpy(&(UsartDevice->RxLineBuf[UsartDevice->countRxLineBuf]),UsartDevice->RxBuf,UsartDevice->countRxBuf);
+				UsartDevice->pRxLineBuf+=UsartDevice->countRxBuf;
+				UsartDevice->countRxLineBuf=len;
+
+				//if end of line
+				if (UsartDevice->RxLineBuf[UsartDevice->countRxLineBuf-1]=='\n')
+				{
+					serial3Callback((char *)UsartDevice->RxLineBuf);
+					memset(UsartDevice->RxLineBuf,0,len);
+					UsartDevice->pRxLineBuf=UsartDevice->RxLineBuf;
+					UsartDevice->countRxLineBuf=0;
+				}
+			}
 
 			/*clear Recived flag*/
 			UsartDevice->Received = 0;
@@ -331,21 +302,59 @@ void UsartDMAIdleHandler(UART_DEVICE *UsartDevice)
 		HAL_UART_Receive_DMA(UsartDevice->huart, UsartDevice->RxBuf, UART_RX_BUF_SIZE - 1);
 }
 
-/*Put this function in a loop for polling*/
-void Usart_TerminalHandler()
+/*This function is put in the control loop in freeRTOS.c for polling*/
+void Usart_ReceiveHandler()
 {
-	UsartDMAIdleHandler(&Usart3Device);
-	UsartDMAIdleHandler(&Usart2Device);
-
 	/********************************Usart 1 Int reception****************************/
 	if(Usart1Device.Received == 1)
 	{
-		usart1CommandHandler();
+		serial1Callback((char *)Usart1Device.RxBuf);
 		memset(Usart1Device.RxBuf,0,UART_RX_BUF_SIZE);
 		Usart1Device.pRxBuf=Usart1Device.RxBuf;
 		Usart1Device.Received = 0;
-
 	}
 
+	/********************************Usart 2 Int reception****************************/
+	if(Usart2Device.Received == 1)
+	{
+		serial2Callback((char *)Usart2Device.RxBuf);
+		memset(Usart2Device.RxBuf,0,UART_RX_BUF_SIZE);
+		Usart2Device.pRxBuf=Usart2Device.RxBuf;
+		Usart2Device.Received = 0;
+	}
+
+	/********************************Usart 3 DMA reception****************************/
+	UsartDMAReceiveHandler(&Usart3Device);
 }
 
+
+
+
+
+
+static PRINTFBINSTRUCT printfBinStruct;
+//input: array pointer, and data number
+//function: add header and tail, send into buffer
+void printfBin_init()
+{
+	memset(&printfBinStruct,0,sizeof(PRINTFBINSTRUCT));
+	printfBinStruct.header[0]=0x5a;
+	printfBinStruct.header[1]=0x5a;
+	printfBinStruct.header[2]=0xa5;
+	printfBinStruct.header[3]=0xa5;
+	printfBinStruct.pData=printfBinStruct.data;
+}
+void printfBin_appendData(int16_t dat)
+{
+*(printfBinStruct.pData)++=dat;
+}
+void printfBin()
+{
+int len=(printfBinStruct.pData-printfBinStruct.data)*sizeof(int16_t);
+char *pChar=(char *)(printfBinStruct.pData);
+*(pChar)++='\r';
+*(pChar)++='\n';
+len= len+6;
+printfBinStruct.pData = printfBinStruct.data;
+_write(0,(char *)(&printfBinStruct),len);
+}

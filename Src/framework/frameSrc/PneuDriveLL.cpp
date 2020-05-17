@@ -151,8 +151,8 @@ __weak  void serialDisplay() {
   * @param  pSerialReceiveBuffer : Pointer to the received string ended with '\r\n'.
   * @retval None
   */
-__weak  void serialReceiveCallback(char *pSerialReceiveBuffer) {
-	printf("Running default serialCommandCallback()\r\n");
+__weak  void serial3Callback(char *pSerialReceiveBuffer) {
+	printf("Running default serial3Callback()\r\n");
 }
 ;
 
@@ -166,14 +166,14 @@ __weak  void interruptCallback(int Button_Interrupt_Pin)
 {
 };
 
-__weak void serialPort1Callback(char *pWirelessReceiveBuffer) {
-	printf("Running default WirelessCommandCallbackFunction()\r\n");
+__weak void serial1Callback(char *pWirelessReceiveBuffer) {
+	printf("Running default serial1Callback()\r\n");
 }
 ;
 
-__weak  void serialPort2Callback(char *pSerialPort4Buffer)
+__weak  void serial2Callback(char *pSerialPort4Buffer)
 {
-
+	printf("Running default serial2Callback()\r\n");
 };
 /***************************************************************************************************/
 

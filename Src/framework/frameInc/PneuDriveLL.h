@@ -21,7 +21,7 @@
 void setup();			//called once at the beginning.
 void loop();			//called at the frequency of CONTROL_FREQUENCY.
 void serialDisplay();	//called at the frequency of DISPLAY_FREQUENCY.
-void serialReceiveCallback(char *pSerialReceiveBuffer); //called when receive string with ending '\r\n'
+void serial3Callback(char *pSerialReceiveBuffer); //called when receive string with ending '\r\n'
 void interruptCallback(int interrupt_Pin); //called when interrupt port has an uprising interrupt.
 
 
@@ -46,8 +46,8 @@ void setPeriodControlLoop(int32_t clMS);
 void setPeriodSendLoop(int32_t slMS);
 
 /**************************Other interface functions to use**************************/
-void serialPort1Callback(char *pSerialPort1Buffer);
-void serialPort2Callback(char *pSerialPort4Buffer);
+void serial1Callback(char *pSerialPort1Buffer);
+void serial2Callback(char *pSerialPort2Buffer);
 
 
 #include <builtInHWConfig.h>

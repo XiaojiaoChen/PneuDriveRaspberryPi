@@ -7,10 +7,10 @@ PneuDriveLL.cpp:77:6:void PWMWriteFrequency(uint16_t, float)	24	static
 PneuDriveLL.cpp:115:14:void setup()	8	static
 PneuDriveLL.cpp:127:14:void loop()	8	static
 PneuDriveLL.cpp:142:14:void serialDisplay()	8	static
-PneuDriveLL.cpp:154:14:void serialReceiveCallback(char*)	16	static
+PneuDriveLL.cpp:154:14:void serial3Callback(char*)	16	static
 PneuDriveLL.cpp:165:14:void interruptCallback(int)	16	static
-PneuDriveLL.cpp:169:13:void serialPort1Callback(char*)	16	static
-PneuDriveLL.cpp:174:14:void serialPort2Callback(char*)	16	static
+PneuDriveLL.cpp:169:13:void serial1Callback(char*)	16	static
+PneuDriveLL.cpp:174:14:void serial2Callback(char*)	16	static
 PneuDriveLL.cpp:186:10:uint32_t millis()	8	static
 PneuDriveLL.cpp:191:10:uint32_t micros()	16	static
 PneuDriveLL.cpp:197:6:void delay_us(int32_t)	24	static
