@@ -3,11 +3,11 @@ cmath:144:3:constexpr float std::atan2(float, float)	16	static
 cmath:184:3:constexpr float std::cos(float)	16	static
 cmath:425:3:constexpr float std::sin(float)	16	static
 SoftArmSegment.cpp:17:1:SOFT_ARM_SEGMENT::SOFT_ARM_SEGMENT(int)	32	static
-SoftArmSegment.cpp:34:7:float SOFT_ARM_SEGMENT::readPressure(int)	16	static
-SoftArmSegment.cpp:40:6:void SOFT_ARM_SEGMENT::readPressureAll()	24	static
-SoftArmSegment.cpp:47:6:void SOFT_ARM_SEGMENT::writeOpeningAll(float)	24	static
-SoftArmSegment.cpp:54:6:void SOFT_ARM_SEGMENT::controlPressureAll()	24	static
-SoftArmSegment.cpp:61:6:void SOFT_ARM_SEGMENT::setPressureCommand(int, float)	24	static
-SoftArmSegment.cpp:70:7:float SOFT_ARM_SEGMENT::readLength()	40	static
-SoftArmSegment.cpp:77:6:void SOFT_ARM_SEGMENT::readIMU(char*)	24	static
-SoftArmSegment.cpp:93:6:void SOFT_ARM_SEGMENT::quatern2AB()	32	static
+SoftArmSegment.cpp:35:7:float SOFT_ARM_SEGMENT::readPressure(int)	16	static
+SoftArmSegment.cpp:41:6:void SOFT_ARM_SEGMENT::readPressureAll()	24	static
+SoftArmSegment.cpp:48:6:void SOFT_ARM_SEGMENT::writeOpeningAll(float)	24	static
+SoftArmSegment.cpp:55:6:void SOFT_ARM_SEGMENT::controlPressureAll()	24	static
+SoftArmSegment.cpp:62:6:void SOFT_ARM_SEGMENT::setPressureCommand(int, float)	24	static
+SoftArmSegment.cpp:71:7:float SOFT_ARM_SEGMENT::readLength()	40	static
+SoftArmSegment.cpp:78:6:void SOFT_ARM_SEGMENT::readIMU(char*)	24	static
+SoftArmSegment.cpp:99:6:void SOFT_ARM_SEGMENT::quatern2AB()	32	static

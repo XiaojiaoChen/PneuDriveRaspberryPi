@@ -1,7 +1,4 @@
 myMain.cpp:17:6:void setup()	8	static
 myMain.cpp:35:6:void loop()	8	static
-myMain.cpp:51:6:void serialDisplay()	136	static
-myMain.cpp:74:6:void serial3Callback(char*)	16	static
-myMain.cpp:86:6:void serial2Callback(char*)	24	static
-myMain.cpp:90:1:void __static_initialization_and_destruction_0(int, int)	16	static
-myMain.cpp:90:1:cpp)	8	static
+myMain.cpp:50:6:void serialDisplay()	136	static
+myMain.cpp:73:6:void serial3Callback(char*)	16	static

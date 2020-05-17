@@ -31,6 +31,7 @@ SOFT_ARM_SEGMENT::SOFT_ARM_SEGMENT(int num)
 }
 
 
+
 float SOFT_ARM_SEGMENT::readPressure(int num)
 {
 	pressure[num]=basePlatform->chambers[num]->readPressure();
@@ -85,9 +86,14 @@ void SOFT_ARM_SEGMENT::readIMU(char *pBuffer) {
 		imuData.q1=(pFrame->q1)/32768.0f;
 		imuData.q2=(pFrame->q2)/32768.0f;
 		imuData.q3=(pFrame->q3)/32768.0f;
-
+		imuData.q0_int=pFrame->q0;
+		imuData.q1_int=pFrame->q1;
+		imuData.q2_int=pFrame->q2;
+		imuData.q3_int=pFrame->q3;
 	}
 	quatern2AB();
+
+
 }
 
 void SOFT_ARM_SEGMENT::quatern2AB(){

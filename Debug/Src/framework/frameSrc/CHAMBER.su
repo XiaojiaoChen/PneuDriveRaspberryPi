@@ -5,16 +5,16 @@ CHAMBER.cpp:116:6:void CHAMBER::attachSensor(int)	16	static
 CHAMBER.cpp:120:6:void CHAMBER::zeroPressure()	16	static
 CHAMBER.cpp:124:7:float CHAMBER::readPressure()	16	static
 CHAMBER.cpp:135:7:float CHAMBER::readPressureExt(float)	16	static
-CHAMBER.cpp:144:7:float CHAMBER::filterPressure()	16	static
-CHAMBER.cpp:150:6:void CHAMBER::writePressure(float)	24	static
-CHAMBER.cpp:177:6:void CHAMBER::writePressure(float, float)	32	static
-CHAMBER.cpp:200:6:void CHAMBER::writeOpeningSequence()	16	static
-CHAMBER.cpp:218:7:float CHAMBER::readPosition()	16	static
-CHAMBER.cpp:222:6:void CHAMBER::writePosition(float)	16	static
-CHAMBER.cpp:225:7:float CHAMBER::readOpening()	16	static
-CHAMBER.cpp:229:6:void CHAMBER::writeOpening(float)	16	static
-CHAMBER.cpp:244:6:void CHAMBER::setSensorRange_GaugePa(float, float, float, float)	32	static
-CHAMBER.cpp:249:6:void CHAMBER::setValveOpeningLimit(float, float, float, float)	32	static
-CHAMBER.cpp:256:7:float CHAMBER::pressure2position(float)	16	static
-CHAMBER.cpp:260:7:float CHAMBER::position2pressure(float)	16	static
-CHAMBER.cpp:264:14:float myInterpolate(int, float*, float*, float)	32	static
+CHAMBER.cpp:146:7:float CHAMBER::filterPressure()	16	static
+CHAMBER.cpp:152:6:void CHAMBER::writePressure(float)	24	static
+CHAMBER.cpp:179:6:void CHAMBER::writePressure(float, float)	32	static
+CHAMBER.cpp:202:6:void CHAMBER::writeOpeningSequence()	16	static
+CHAMBER.cpp:220:7:float CHAMBER::readPosition()	16	static
+CHAMBER.cpp:224:6:void CHAMBER::writePosition(float)	16	static
+CHAMBER.cpp:227:7:float CHAMBER::readOpening()	16	static
+CHAMBER.cpp:231:6:void CHAMBER::writeOpening(float)	16	static
+CHAMBER.cpp:246:6:void CHAMBER::setSensorRange_GaugePa(float, float, float, float)	32	static
+CHAMBER.cpp:251:6:void CHAMBER::setValveOpeningLimit(float, float, float, float)	32	static
+CHAMBER.cpp:258:7:float CHAMBER::pressure2position(float)	16	static
+CHAMBER.cpp:262:7:float CHAMBER::position2pressure(float)	16	static
+CHAMBER.cpp:266:14:float myInterpolate(int, float*, float*, float)	32	static

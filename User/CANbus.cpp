@@ -9,7 +9,6 @@
 #include <CANbus.h>
 #include "softArm.h"
 struct CANBUS_HANDLE canbus;
-extern SOFT_ARM softArm;
 
 #include <inttypes.h>
 static HAL_StatusTypeDef my_HAL_CAN_GetRxMessage(CAN_HandleTypeDef *hcan, uint32_t RxFifo, CAN_RxHeaderTypeDef *pHeader, uint8_t aData[]);

@@ -41,6 +41,10 @@ typedef struct IMUDATA_STRUCT{
 	float q1;
 	float q2;
 	float q3;
+	int16_t q0_int;
+	int16_t q1_int;
+	int16_t q2_int;
+	int16_t q3_int;
 }__attribute__((packed)) IMUDATA;
 
 

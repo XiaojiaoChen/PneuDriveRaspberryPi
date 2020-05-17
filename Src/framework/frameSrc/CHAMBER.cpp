@@ -138,6 +138,8 @@ float CHAMBER::readPressureExt(float pressureExt){
 	pressureRaw=pressureExt;
 	pressure=pressureRaw-pressureOffset;
 
+	pressure = pressureSensor.read();
+	//pressure = pressureSensorspi.read();
 	return pressure;
 }
 

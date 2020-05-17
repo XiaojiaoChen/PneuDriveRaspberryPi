@@ -49,8 +49,8 @@ typedef struct SENSORDATACOMPACT_TAG {
 }SENSORDATACOMPACT;
 
 typedef struct SENSORDATA_TAG {
-	int16_t pressure;
-	uint16_t distance;
+	int16_t pressure; //HPa Gauge
+	uint16_t distance;//mm
 	QUATERNION quaternion;
 }SENSORDATA;
 
@@ -58,6 +58,10 @@ typedef struct COMMANDDATA_TAG {
 	int16_t values[5];
 	uint16_t commandType;
 }COMMANDDATA;
+
+
+
+
 
 
 

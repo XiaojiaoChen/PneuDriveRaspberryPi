@@ -12,7 +12,7 @@
 #include "spiSlave.h"
 #include <SoftArm.h>
 
-SOFT_ARM softArm;
+
 
 void setup() {
 	/*setup 1000Hz control loop*/
@@ -25,7 +25,7 @@ void setup() {
 	softArm.setupChamberPorts();
 
 	/*start canBus receive*/
-	canConfig();
+//	canConfig();
 
 	/**********start the SPI slave in DMA*****/
 	spiSlaveStart();
@@ -34,13 +34,12 @@ void setup() {
 
 void loop() {
 
+
 	/***************Handle string commands from the raspberry pi********************/
 	softArm.execInfoCommand(softArm.commandData.infos);
 
 	//update chamber's pressure from the CANbus************************/
 	softArm.readSensorAll();
-
-
 
 	/**Write the command of each chamber, either pressure or opening type*/
 	softArm.writeCommandAll();
@@ -83,8 +82,4 @@ void serial3Callback(char *pSerialReceiveBuffer) {
 	}
 }
 
-void serial2Callback(char *pSerialReceiveBuffer) {
-	for(int j=0;j<SEGMENTNUM;j++){
-		softArm.armSegments[j].readIMU(pSerialReceiveBuffer);
-	}
-}
+

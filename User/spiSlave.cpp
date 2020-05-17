@@ -12,8 +12,6 @@
 #include "string.h"
 #include <inttypes.h>
 
-extern SOFT_ARM softArm;
-
 SPI_HandleTypeDef *hspiSlave=&hspi1;
 
 

@@ -1,6 +1,9 @@
 SoftArm.cpp:16:1:SOFT_ARM::SOFT_ARM()	24	static
-SoftArm.cpp:22:6:void SOFT_ARM::setupChamberPorts()	40	static
-SoftArm.cpp:41:6:void SOFT_ARM::zeroPressureAll()	24	static
-SoftArm.cpp:49:6:void SOFT_ARM::readSensorAll()	24	static
-SoftArm.cpp:58:6:void SOFT_ARM::writeCommandAll()	40	static
-SoftArm.cpp:79:6:void SOFT_ARM::execInfoCommand(char*)	16	static
+SoftArm.cpp:23:6:void SOFT_ARM::setupChamberPorts()	40	static
+SoftArm.cpp:40:6:void SOFT_ARM::zeroPressureAll()	24	static
+SoftArm.cpp:49:6:void SOFT_ARM::readSensorAll()	40	static
+SoftArm.cpp:71:6:void serial2Callback(char*)	32	static
+SoftArm.cpp:82:6:void SOFT_ARM::writeCommandAll()	40	static
+SoftArm.cpp:103:6:void SOFT_ARM::execInfoCommand(char*)	16	static
+SoftArm.cpp:107:1:void __static_initialization_and_destruction_0(int, int)	16	static
+SoftArm.cpp:107:1:cpp)	8	static

@@ -63,12 +63,13 @@ public:
 	void setupChamberPorts();
 	void readSensorAll();
 	void zeroPressureAll();
+	void readPressureAll();
 	void writeCommandAll();
 	void execInfoCommand(char *);
 };
 
 
-
+extern SOFT_ARM softArm;
 
 #ifdef __cplusplus
 }
