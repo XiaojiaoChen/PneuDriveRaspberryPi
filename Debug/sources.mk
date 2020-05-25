@@ -38,6 +38,7 @@ Drivers/CMSIS/DSP/Source/StatisticsFunctions \
 Drivers/CMSIS/DSP/Source/SupportFunctions \
 Drivers/CMSIS/DSP/Source/TransformFunctions \
 Drivers/STM32F7xx_HAL_Driver/Src \
+Inc \
 Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS \
 Middlewares/Third_Party/FreeRTOS/Source \
 Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1 \

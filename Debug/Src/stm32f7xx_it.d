@@ -52,7 +52,8 @@ Src/stm32f7xx_it.o: ../Src/stm32f7xx_it.c ../Inc/main.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
- C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/myUsartFunction.h
+ C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/myUsartFunction.h \
+ ../Inc/usart.h ../Inc/main.h
 
 ../Inc/main.h:
 
@@ -163,3 +164,7 @@ Src/stm32f7xx_it.o: ../Src/stm32f7xx_it.c ../Inc/main.h \
 ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
 
 C:/Users/40207/OneDrive/OneDriveDocumentation/STM32CubeIDEWorkSpaceOnedrive/PneuDriveRaspberryPi/Src/framework/frameInc/myUsartFunction.h:
+
+../Inc/usart.h:
+
+../Inc/main.h:

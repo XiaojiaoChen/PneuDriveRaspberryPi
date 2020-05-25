@@ -14,12 +14,14 @@
 
 
 #include "stm32f7xx_hal.h"
+#include "stdio.h"
+#include "usart.h"
 
-#define UART_TX_BUF_SIZE 1000
+#define UART_TX_BUF_SIZE 800
 #define UART_RX_BUF_SIZE 500
 #define COMMAND_SIZE 100
 
-#define UART_TX_BUF_NUM	15
+#define UART_TX_BUF_NUM	10
 
 typedef struct {
 	unsigned char header[4];
@@ -27,9 +29,15 @@ typedef struct {
 	unsigned char tail[2];
 }__attribute__((packed)) RECEIVEBINSTRUCT;
 
+typedef enum USARTMode_ENUM{
+	usartIntMode,
+	usartDMAIdleMode,
+	usartDMACircularMode
+}USARTMode;
 
 typedef struct UART_DEVICE_STRUCT{
 	UART_HandleTypeDef *huart;
+	USARTMode	usartmode;
 
 	uint8_t TxBuf[UART_TX_BUF_NUM][UART_TX_BUF_SIZE];  /*TxBuffer*/
 	uint16_t consumerTxBufNum;
@@ -43,6 +51,7 @@ typedef struct UART_DEVICE_STRUCT{
 	uint8_t *pRxLineBuf;
 	uint16_t countRxLineBuf;
 	uint16_t USART_RX_STA;
+	uint32_t RxInd;
 
 	uint8_t szCmd[COMMAND_SIZE];
 	float	uiArgv[3];
@@ -62,10 +71,12 @@ typedef struct UART_DEVICE_STRUCT{
 }UART_DEVICE;
 
 void my_UsartInit();			/*put in the Initialization*/
-void myUsartDMAIRQ(UART_HandleTypeDef *huart);/*put in the ISR*/
-void Usart_ReceiveHandler(void);/*put In the polling loop*/
+void myUsartDMAIdleIRQ(UART_HandleTypeDef *huart);/*put in the ISR*/
+void Usart_ReceivePolling(void);/*put In the polling loop*/
 void myUsartIntIRQ(UART_HandleTypeDef *huart);/*put in the ISR*/
 
+int my_write_DMA(UART_HandleTypeDef *huart, uint8_t *pSrc, int len);
+int my_read_DMA_byte(UART_HandleTypeDef *huart);
 /*Call
  *	   serial1Callback(char *buf)
  *or   serial2Callback(char *buf)
@@ -73,7 +84,8 @@ void myUsartIntIRQ(UART_HandleTypeDef *huart);/*put in the ISR*/
  * to access the received string.
  */
 
-
+void printfBin_appendData(int16_t dat);
+void printfBin();
 
 
 #ifdef __cplusplus

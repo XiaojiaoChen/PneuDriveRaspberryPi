@@ -9,10 +9,12 @@
  */
 
 #include <PneuDrive.h> // always include this header in your own code.
+#include <ROSSerialNode.h>
 #include "spiSlave.h"
 #include <SoftArm.h>
 
 SOFT_ARM softArm;
+
 
 void setup() {
 	/*setup 1000Hz control loop*/
@@ -30,6 +32,8 @@ void setup() {
 	/**********start the SPI slave in DMA*****/
 	spiSlaveStart();
 
+	/*********start the rosserial node*******/
+	rosNodeSetup();
 }
 
 void loop() {
@@ -43,6 +47,11 @@ void loop() {
 	/**Write the command of each chamber, either pressure or opening type*/
 	softArm.writeCommandAll();
 
+	/*rosserial publish**/
+	rosNodePub();
+
+	/**rosserial spinonce routine***/
+	rosNodeSpinOnce();
 }
 
 /*serial output using DMA*/
@@ -69,7 +78,7 @@ void serialDisplay() {
 }
 
 //called when serial input receive string with ending '\r\n'
-void serialReceiveCallback(char *pSerialReceiveBuffer) {
+void serial3Callback(char *pSerialReceiveBuffer) {
 
 	if (pSerialReceiveBuffer[0] == 'k') {
 		//	/**Write command for each actuator, q&r of kalman filter for laser, */

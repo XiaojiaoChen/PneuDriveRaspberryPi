@@ -35,7 +35,7 @@
 #ifndef _ROS_H_
 #define _ROS_H_
 
-#include "ros/node_handle.h"
+#include <rosserialInc/ros/node_handle.h>
 #include "STM32Hardware.h"
 
 namespace ros

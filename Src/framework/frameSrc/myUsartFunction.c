@@ -9,15 +9,10 @@
 #include <PneuDriveLL.h>
 #include "myUsartFunction.h"
 #include "cmsis_os.h"
-#include "usart.h"
+
 #include "string.h"
 #include <stdarg.h>
 #include <stdio.h>
-
-typedef enum USARTMode_ENUM{
-	IntMode,
-	DMAMode
-}USARTMode;
 
 //To PC usb
 UART_DEVICE Usart3Device;
@@ -28,11 +23,76 @@ UART_DEVICE Usart1Device;
 //for user usage.
 UART_DEVICE Usart2Device;
 
-
 static void myInitUsartMode(UART_HandleTypeDef *huart,USARTMode usartMode);
-static void printfBin_appendData(int16_t dat);
-static void printfBin();
 static void printfBin_init();
+static void _serialCallback(UART_DEVICE *usartDevice);
+static void UsartRxIntReceivedPolling(UART_DEVICE *UsartDevice);
+static void UsartRxDMAIdleReceivedPolling(UART_DEVICE *UsartDevice);
+static UART_DEVICE *getUsartDevice(UART_HandleTypeDef *huart);
+
+
+/*This file enables to use printf() to output strings to a uart:
+ * 1.None blocking Tx and Rx using DMA
+ * 2.Tx has Buffers without loss of transmission data
+ * 3.Rx accept variable size
+ *
+ *
+ * Usage:
+ * 1.configure as below.
+ * 2.For transmitting, use printf() as usual.
+ * 3.For receiving, received string is automatically updated in serialxCallback(char *);
+ *
+ * Stm32CubeMx configuration:
+ * Usart configuration: Tx DMA  Rx	DMA Enable Interrupt
+ * file location:
+ * 1. put my_UsartInit() in initialization part
+ * 2. put myUsartDMAIRQ() or myUsartIntIRQ() in ISR for receiving data
+ * 3. put Usart_ReceivePolling() in polling loop for processing data
+ *
+ */
+
+/*put this function in the main.c for initilization*/
+void my_UsartInit()
+{
+
+	 //Usart 1 is connected to raspberry pi, we handle Tx, rosserial handles Rx
+	 myInitUsartMode(&huart1,usartDMACircularMode);
+
+	 //for application use
+	 myInitUsartMode(&huart2,usartIntMode);
+
+	 //Usart 3 is connecting through usb by defaut, configured to DMA mode
+	 myInitUsartMode(&huart3,usartDMAIdleMode);
+
+	 //Enable printf Binany
+	 printfBin_init();
+}
+
+static void myInitUsartMode(UART_HandleTypeDef *huart,USARTMode usartMode){
+	UART_DEVICE *uartDev=getUsartDevice(huart);
+	memset(uartDev,0,sizeof(UART_DEVICE));
+	uartDev->huart = huart;
+	uartDev->pRxBuf = uartDev->RxBuf;
+	uartDev->pRxLineBuf=uartDev->RxLineBuf;
+	uartDev->receveBinPtr = (RECEIVEBINSTRUCT *)uartDev->RxBuf;
+	uartDev->usartmode=usartMode;
+	if(usartMode==usartIntMode){
+		 __HAL_UART_ENABLE_IT(huart,UART_IT_RXNE);
+	}
+	else if(usartMode==usartDMACircularMode){
+		 /*get ready for receive*/
+		 HAL_UART_Receive_DMA(uartDev->huart, uartDev->RxBuf, UART_RX_BUF_SIZE-1);
+
+	}
+	else if(usartMode==usartDMAIdleMode){
+
+		 /*get ready for receive*/
+		 HAL_UART_Receive_DMA(uartDev->huart, uartDev->RxBuf, UART_RX_BUF_SIZE-1);
+
+		 /*Enable USART_Rx IDLE Detection to stop USART1_Rx_DMA*/
+		 __HAL_UART_ENABLE_IT(uartDev->huart, UART_IT_IDLE);
+	}
+}
 
 static UART_DEVICE *getUsartDevice(UART_HandleTypeDef *huart){
 	if(huart==&huart1)
@@ -45,85 +105,106 @@ static UART_DEVICE *getUsartDevice(UART_HandleTypeDef *huart){
 }
 
 
-typedef struct
-{
-	unsigned char header[4];
-	int16_t data[UART_TX_BUF_SIZE/2];
-	int16_t *pData;
-} __attribute__((packed)) PRINTFBINSTRUCT;
-/*serial bin format:
- * Hex: 0x5a  0x5a 0xa5  0xa5 data 	0x0D 	0x0A
- * Dec: 90    90   165   165  data  13 		10
- * char: Z    Z     	    data  \r  	\n
- */
 
 
-
-
-/*This file enables to use printf() to output strings to a uart:
- * 1.None blocking Tx and Rx using DMA
- * 2.Tx has Buffers without loss of transmission data
- * 3.Rx accept variable size
- *
- *
- * Usage:
- * 1.configure as below.
- * 2.For transmitting, use printf() as usual.
- * 3.For receiving, received string is automatically updated in UsartDevice->RxBuf
- *
- * Stm32CubeMx configuration:
- * Usart configuration: Tx DMA  Rx	DMA Enable Interrupt
- * file location:
- * 1. put my_UsartInit() in initialization part
- * 2. put HAL_UART_RxIdleCallback() in ISR for receiving data
- * 3. put Usart_TerminalHandler() in polling loop for processing data
- *
- */
-
-/*put this function in the main.c for initilization*/
-void my_UsartInit()
-{
-
-	 //Usart 1 is connected to raspberry pi on its usart1
-	 myInitUsartMode(&huart1,IntMode);
-
-	 //for application use
-	 myInitUsartMode(&huart2,IntMode);
-
-	 //Usart 3 is connecting through usb by defaut, configured to DMA mode
-	 myInitUsartMode(&huart3,DMAMode);
-
-	 //Enable printf Binany
-	 printfBin_init();
+/************************************			*************************************/
+/************************************	Transfer*************************************/
+/************************************			************************************/
+/*Redirect printf() by implementing (weak) _write function.
+ *Every printf() call would store the output string in TxBuf[], ready for Usart DMA output instead of directly output*/
+int _write(int file, char *pSrc, int len){
+	return my_write_DMA(&huart3,(uint8_t *)pSrc,len);
 }
-
-void myInitUsartMode(UART_HandleTypeDef *huart,USARTMode usartMode){
+int my_write_DMA(UART_HandleTypeDef *huart, uint8_t *pSrc, int len)
+{
 	UART_DEVICE *uartDev=getUsartDevice(huart);
-	memset(uartDev,0,sizeof(UART_DEVICE));
-	uartDev->huart = huart;
-	uartDev->pRxBuf = uartDev->RxBuf;
-	uartDev->pRxLineBuf=uartDev->RxLineBuf;
-	uartDev->receveBinPtr = (RECEIVEBINSTRUCT *)uartDev->RxBuf;
-	if(usartMode==IntMode){
-		 __HAL_UART_ENABLE_IT(huart,UART_IT_RXNE);
-	}
-	else if(usartMode==DMAMode){
+	uint8_t *pDes=uartDev->TxBuf[uartDev->producerTxBufNum];
 
-		 /*get ready for receive*/
-		 HAL_UART_Receive_DMA(uartDev->huart, uartDev->RxBuf, UART_RX_BUF_SIZE-1);
+	//store the string to next buffer
+	memcpy(pDes,pSrc,len);
+	*(pDes+len)='\0';
+	uartDev->countTxBuf[uartDev->producerTxBufNum] = len;
 
-		 /*Enable USART_Rx IDLE Detection to stop USART1_Rx_DMA*/
-		 __HAL_UART_ENABLE_IT(uartDev->huart, UART_IT_IDLE);
+	//add one bufferedTxNum, recording how many buffered strings that haven't been sent
+	uartDev->bufferedTxNum++;
+
+	//Try to send just buffered string if this is the only one
+	if(uartDev->bufferedTxNum == 1){
+		HAL_UART_Transmit_DMA(uartDev->huart,pDes,uartDev->countTxBuf[uartDev->producerTxBufNum]);
+		uartDev->TxStart = micros();
 	}
+	else{
+	//TO DO, There is a bug here, when the builtInPWMFrequency is changed, the uartDevs would somehow suddenly lost the configurations
+		uartDev->bufferedTxNum=uartDev->bufferedTxNum-1+1;
+	}
+	//move producerTxBufNum forward
+	uartDev->producerTxBufNum++;
+	uartDev->producerTxBufNum%=UART_TX_BUF_NUM;
+
+	//Buffered term full, wait for consumer to reduce producerTxBufNum
+//	while(uartDev->bufferedTxNum > (UART_TX_BUF_NUM-2)){
+//		//Danger! May block the main program continuously !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//		//This waiting mechanism is to take care of the high frequency output within a short period during the Ethercat Initialization
+//		//If the producer is always quicker than consumer, for example a high frequency output ,this function would block the program permanently
+//	};
+	return len;
 }
 
+
+
+
+
+/************************************							*************************************/
+/************************************Transfer Complete Callback*************************************/
+/************************************							************************************/
+/*this function would overwrite HAL's weak HAL_UART_TxCpltCallback for all usart*/
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+	UART_DEVICE *uartDev=getUsartDevice(huart);
+	if(uartDev->usartmode==usartDMAIdleMode){
+		UART_DEVICE *uartDev=getUsartDevice(huart);
+		 /*update information*/
+		 uartDev->TxEnd = micros();
+		 uartDev->lastTxTime = uartDev->TxEnd - uartDev->TxStart;
+		 uartDev->lastTxCount = uartDev->countTxBuf[uartDev->consumerTxBufNum];
+
+		/*One consumption done. move consumer forward*/
+		uartDev->consumerTxBufNum++;
+		uartDev->consumerTxBufNum%=UART_TX_BUF_NUM;
+
+		/*reduce one bufferedTxNum*/
+		 uartDev->bufferedTxNum--;
+
+		/*If it is still positive, go on consume next*/
+		if(uartDev->bufferedTxNum>0){
+			uartDev->TxStart = micros();
+			uint8_t *px = &uartDev->TxBuf[uartDev->consumerTxBufNum][0];
+			HAL_UART_Transmit_DMA(uartDev->huart,px,uartDev->countTxBuf[uartDev->consumerTxBufNum]);
+		}
+	}
+
+}
+
+/************************************							*************************************/
+/************************************Receive Complete Callback*************************************/
+/************************************							************************************/
+/*this function would overwrite HAL's weak HAL_UART_RxCpltCallback for all usart*/
+
+
+
+
+
+
+/************************************							*************************************/
+/************************************Receive Callback*************************************/
+/************************************							************************************/
 /*put this function in stm32f7xx_it.c as below
 	void USART3_IRQHandler(void){
-		HAL_UART_RxIdleCallback(&huart3);
-		 HAL_UART_IRQHandler(&huart3);
+		myUsartDMAIRQ(&huart3) ;
+		HAL_UART_IRQHandler(&huart3);
 	}
 */
-void myUsartDMAIRQ(UART_HandleTypeDef *huart)
+void myUsartDMAIdleIRQ(UART_HandleTypeDef *huart)
 {
 	UART_DEVICE *uartDev=getUsartDevice(huart);
 	 uint32_t tmp_flag = __HAL_UART_GET_FLAG(huart, UART_FLAG_IDLE);
@@ -140,77 +221,23 @@ void myUsartDMAIRQ(UART_HandleTypeDef *huart)
 	}
 }
 
-/*Redirect printf() by implementing (weak) _write function.
- *Every printf() call would store the output string in TxBuf[], ready for Usart DMA output instead of directly output*/
-int _write(int file, char *pSrc, int len)
+void myUsartDMAIRQ(UART_HandleTypeDef *huart)
 {
-	uint8_t *pDes=Usart3Device.TxBuf[Usart3Device.producerTxBufNum];
 
-	//store the string to next buffer
-	memcpy(pDes,pSrc,len);
-	*(pDes+len)='\0';
-	Usart3Device.countTxBuf[Usart3Device.producerTxBufNum] = len;
-
-	//add one bufferedTxNum, recording how many buffered strings that haven't been sent
-	Usart3Device.bufferedTxNum++;
-
-	//Try to send just buffered string if this is the only one
-	if(Usart3Device.bufferedTxNum == 1){
-		HAL_UART_Transmit_DMA(Usart3Device.huart,pDes,Usart3Device.countTxBuf[Usart3Device.producerTxBufNum]);
-		Usart3Device.TxStart = micros();
-	}
-	else{
-	//TO DO, There is a bug here, when the builtInPWMFrequency is changed, the Usart3Devices would somehow suddenly lost the configurations
-		Usart3Device.bufferedTxNum=Usart3Device.bufferedTxNum;
-	}
-	//move producerTxBufNum forward
-	Usart3Device.producerTxBufNum++;
-	Usart3Device.producerTxBufNum%=UART_TX_BUF_NUM;
-
-	//Buffered term full, wait for consumer to reduce producerTxBufNum
-//	while(Usart3Device.bufferedTxNum > (UART_TX_BUF_NUM-2)){
-//		//Danger! May block the main program continuously !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//		//This waiting mechanism is to take care of the high frequency output within a short period during the Ethercat Initialization
-//		//If the producer is always quicker than consumer, for example a high frequency output ,this function would block the program permanently
-//	};
-	return len;
 }
 
-
-
-/*this function would overwrite HAL's weak HAL_UART_TxCpltCallback*/
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-	UART_DEVICE *uartDev=getUsartDevice(huart);
-	 /*update information*/
-	 uartDev->TxEnd = micros();
-	 uartDev->lastTxTime = uartDev->TxEnd - uartDev->TxStart;
-	 uartDev->lastTxCount = uartDev->countTxBuf[uartDev->consumerTxBufNum];
-
-	/*One consumption done. move consumer forward*/
-	uartDev->consumerTxBufNum++;
-	uartDev->consumerTxBufNum%=UART_TX_BUF_NUM;
-
-	/*reduce one bufferedTxNum*/
-	 uartDev->bufferedTxNum--;
-
-	/*If it is still positive, go on consume next*/
-	if(uartDev->bufferedTxNum>0){
-		uartDev->TxStart = micros();
-		uint8_t *px = &uartDev->TxBuf[uartDev->consumerTxBufNum][0];
-		HAL_UART_Transmit_DMA(uartDev->huart,px,uartDev->countTxBuf[uartDev->consumerTxBufNum]);
-	}
-}
 
 /*put this function in stm32f7xx_it.c as below
-	void USART1_IRQHandler(void)
+	void USART2_IRQHandler(void)
 	{
-	  myUsartIntIRQ(&huart1);
-	  HAL_UART_IRQHandler(&huart1);
+	  myUsartIntIRQ(&huart2);
+	  HAL_UART_IRQHandler(&huart2);
 	}
 */
 void myUsartIntIRQ(UART_HandleTypeDef *huart)
 {
+	UART_DEVICE *uartDev=getUsartDevice(huart);
+	if(uartDev->usartmode==usartIntMode){
 	UART_DEVICE *uartDev=getUsartDevice(huart);
  	if(__HAL_UART_GET_FLAG(huart, UART_FLAG_RXNE)!=RESET)   //receive interrupt
 	{
@@ -232,10 +259,43 @@ void myUsartIntIRQ(UART_HandleTypeDef *huart)
 		}
 		else uartDev->pRxBuf++;
 	}
+	}
+}
+
+/*This function is put in the control loop in freeRTOS.c for polling*/
+void Usart_ReceivePolling()
+{
+	/********************************Usart 1 DMA reception is circular****************************/
+
+	/********************************Usart 2 Int reception****************************/
+	UsartRxIntReceivedPolling(&Usart2Device);
+
+	/********************************Usart 3 DMA reception****************************/
+	UsartRxDMAIdleReceivedPolling(&Usart3Device);
 }
 
 
-void UsartDMAReceiveHandler(UART_DEVICE *UsartDevice)
+inline static void _serialCallback(UART_DEVICE *usartDevice){
+	char *pSerialBuf=(usartDevice->usartmode==usartDMACircularMode)?((char *)usartDevice->RxLineBuf):((char *)usartDevice->RxBuf);
+
+	if(usartDevice==&Usart2Device){
+		serial2Callback(pSerialBuf);
+	}
+	else if(usartDevice==&Usart3Device){
+		serial3Callback(pSerialBuf);
+	}
+}
+
+static void UsartRxIntReceivedPolling(UART_DEVICE *UsartDevice){
+	if (UsartDevice->Received == 1) {
+		_serialCallback(UsartDevice);
+		memset(UsartDevice->RxBuf,0,UART_RX_BUF_SIZE);
+		UsartDevice->pRxBuf=UsartDevice->RxBuf;
+		UsartDevice->Received = 0;
+	}
+}
+
+static void UsartRxDMAIdleReceivedPolling(UART_DEVICE *UsartDevice)
 {
 	/********************************Usart DMA reception****************************/
 		/*Only process with idle receiving detection*/
@@ -283,7 +343,7 @@ void UsartDMAReceiveHandler(UART_DEVICE *UsartDevice)
 				//if end of line
 				if (UsartDevice->RxLineBuf[UsartDevice->countRxLineBuf-1]=='\n')
 				{
-					serial3Callback((char *)UsartDevice->RxLineBuf);
+					_serialCallback(UsartDevice);
 					memset(UsartDevice->RxLineBuf,0,len);
 					UsartDevice->pRxLineBuf=UsartDevice->RxLineBuf;
 					UsartDevice->countRxLineBuf=0;
@@ -302,29 +362,16 @@ void UsartDMAReceiveHandler(UART_DEVICE *UsartDevice)
 		HAL_UART_Receive_DMA(UsartDevice->huart, UsartDevice->RxBuf, UART_RX_BUF_SIZE - 1);
 }
 
-/*This function is put in the control loop in freeRTOS.c for polling*/
-void Usart_ReceiveHandler()
-{
-	/********************************Usart 1 Int reception****************************/
-	if(Usart1Device.Received == 1)
-	{
-		serial1Callback((char *)Usart1Device.RxBuf);
-		memset(Usart1Device.RxBuf,0,UART_RX_BUF_SIZE);
-		Usart1Device.pRxBuf=Usart1Device.RxBuf;
-		Usart1Device.Received = 0;
-	}
 
-	/********************************Usart 2 Int reception****************************/
-	if(Usart2Device.Received == 1)
-	{
-		serial2Callback((char *)Usart2Device.RxBuf);
-		memset(Usart2Device.RxBuf,0,UART_RX_BUF_SIZE);
-		Usart2Device.pRxBuf=Usart2Device.RxBuf;
-		Usart2Device.Received = 0;
-	}
-
-	/********************************Usart 3 DMA reception****************************/
-	UsartDMAReceiveHandler(&Usart3Device);
+int my_read_DMA_byte(UART_HandleTypeDef *huart){
+	int c=-1;
+	UART_DEVICE *uartDev=getUsartDevice(huart);
+	uint32_t RdmaInd=(UART_RX_BUF_SIZE - __HAL_DMA_GET_COUNTER(huart->hdmarx)) & (UART_RX_BUF_SIZE - 1);
+    if(uartDev->RxInd != RdmaInd){
+      c = uartDev->RxBuf[uartDev->RxInd++];
+      uartDev->RxInd &= (UART_RX_BUF_SIZE - 1);
+    }
+    return c;
 }
 
 
@@ -332,10 +379,21 @@ void Usart_ReceiveHandler()
 
 
 
+typedef struct
+{
+	unsigned char header[4];
+	int16_t data[UART_TX_BUF_SIZE/2];
+	int16_t *pData;
+} __attribute__((packed)) PRINTFBINSTRUCT;
+/*serial bin format:
+ * Hex: 0x5a  0x5a 0xa5  0xa5 data 	0x0D 	0x0A
+ * Dec: 90    90   165   165  data  13 		10
+ * char: Z    Z     	    data  \r  	\n
+ */
 static PRINTFBINSTRUCT printfBinStruct;
 //input: array pointer, and data number
 //function: add header and tail, send into buffer
-void printfBin_init()
+static void printfBin_init()
 {
 	memset(&printfBinStruct,0,sizeof(PRINTFBINSTRUCT));
 	printfBinStruct.header[0]=0x5a;
@@ -358,3 +416,4 @@ len= len+6;
 printfBinStruct.pData = printfBinStruct.data;
 _write(0,(char *)(&printfBinStruct),len);
 }
+
