@@ -61,12 +61,3 @@ void PNEUDRIVE::writeBufferedPressure(int num)
 {
 	chambers[num]->writePressure(pressureCommands[num]);
 }
-
-
-void PNEUDRIVE::setupPlatform() {
-	for(int i=0;i<NumChambers;i++){
-		chambers[i]->writeOpening(0);
-	}
-	pSource.stop();
-	pSink.stop();
-}

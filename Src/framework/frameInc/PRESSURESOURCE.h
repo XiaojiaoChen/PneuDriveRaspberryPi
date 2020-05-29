@@ -27,15 +27,19 @@ public:
 	void attachPump(int DigitalPort);
 	void attachSensor(int AnalogPort);
 	float readPressure();
-	void maintainPressure(float p_low,float p_high);
+	void maintainPressure(float p);
+	void maintainPressureRange(float p_low,float p_high);
 	void stop(void);
+	void zeroPressure();
 	int sourceType;
 	PUMP pump;
 	PRESSURE_SENSOR pressureSensor;
 	int direction;
 	float pressure;
+	float pressureRaw;
 	float pressureLower;
 	float pressureUpper;
+	float pressureOffset;
 };
 
 #ifdef __cplusplus

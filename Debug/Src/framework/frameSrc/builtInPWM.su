@@ -9,4 +9,4 @@ builtInPWM.c:116:6:PWMBuiltInStartChannel	16	static
 builtInPWM.c:121:6:PWMBuiltInStopChannel	16	static
 builtInPWM.c:126:6:PWMBuiltInStart	16	static
 builtInPWM.c:131:6:PWMBuiltInStop	16	static
-builtInPWM.c:137:6:PWMBuiltIn_init	24	static
+builtInPWM.c:137:6:PWMBuiltIn_init	32	static

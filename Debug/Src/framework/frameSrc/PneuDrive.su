@@ -5,4 +5,3 @@ PneuDrive.cpp:45:7:float PNEUDRIVE::readPressure(int)	16	static
 PneuDrive.cpp:50:6:void PNEUDRIVE::writePressure(int, float)	24	static
 PneuDrive.cpp:56:6:void PNEUDRIVE::bufferPressure(int, float)	24	static
 PneuDrive.cpp:60:6:void PNEUDRIVE::writeBufferedPressure(int)	16	static
-PneuDrive.cpp:66:6:void PNEUDRIVE::setupPlatform()	24	static

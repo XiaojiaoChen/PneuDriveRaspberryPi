@@ -147,7 +147,8 @@ void PWMBuiltIn_init()
 			float psc=(uint32_t)(PWM_CriticalPSC[j]+1);
 			PWM_CRITICAL_FRE[i][j]=((PWM_TIMs_CLOCKFREQUENCYs[i]/arr)/psc);  //be careful of overflow
 		}
-		PWMBuiltIn_writeDuty(i,0);
+		float _duty= (PWM_DIGITAL_OUTPUT_REVERSED == 0)?0:1;
+		PWMBuiltIn_writeDuty(i,_duty);
 		PWMBuiltIn_writeFrequency(i,40);
 
 	}

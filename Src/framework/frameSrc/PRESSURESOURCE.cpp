@@ -19,6 +19,7 @@ PRESSURE_SOURCE::PRESSURE_SOURCE(int DigitalPort, int AnalogPort) {
 	pressure=0;
 	pressureLower=0;
 	pressureUpper=0;
+	pressureOffset=0;
 }
 
 
@@ -29,16 +30,34 @@ void PRESSURE_SOURCE::attach(int DigitalPort, int AnalogPort) {
 
 void PRESSURE_SOURCE::attachPump(int DigitalPort) {
 	pump.attach(DigitalPort);
+	pump.stop();
 }
 
 void PRESSURE_SOURCE::attachSensor(int AnalogPort) {
 	pressureSensor.attach(AnalogPort);
 }
 
-void PRESSURE_SOURCE::maintainPressure(float p_low,float p_high) {
+void PRESSURE_SOURCE::maintainPressure(float p){
+	if(p>=0){
+		maintainPressureRange(p,p+10000);
+	}
+	else
+		maintainPressureRange(p-10000,p);
+}
 
-	pressureLower=p_low;
-	pressureUpper=p_high;
+void PRESSURE_SOURCE::maintainPressureRange(float p_low,float p_high) {
+
+
+
+	if(p_low<p_high)
+	{
+		pressureLower=p_low;
+		pressureUpper=p_high;
+	}
+	else{
+		pressureLower=p_high;
+		pressureUpper=p_low;
+	}
 	readPressure();
 
 	if(pressure<pressureLower)
@@ -65,6 +84,11 @@ void PRESSURE_SOURCE::stop()
 
 
 float PRESSURE_SOURCE::readPressure() {
-	pressure=pressureSensor.read();
+	pressureRaw=pressureSensor.read();
+	pressure=pressureRaw-pressureOffset;
 	return pressure;
+}
+
+void PRESSURE_SOURCE::zeroPressure(){
+	pressureOffset = pressureRaw;
 }

@@ -34,7 +34,6 @@ extern "C" {
 class PNEUDRIVE {
 public:
 	PNEUDRIVE(int chambernum=DEFAULT_CHAMBER_NUM);
-	void setupPlatform();
 	void increaseFrequency(float deltaFrequency);
 	void writeFrequency(float fre);
 

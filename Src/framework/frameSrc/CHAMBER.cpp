@@ -78,6 +78,7 @@ positionTable{0,10,20,30,40,50,60,70,80,90,100,110,120}
 	pressureDeadZone = 2000;
 	pressureMaxP=30000;
 	pressureMinN=-30000;
+	pressureOffset=0;
 
 	fulOpening=1;
 	opening = 0;
@@ -104,6 +105,7 @@ void CHAMBER::attach(int PWMPort1,int PWMPort2,int AnalogPort)
 {
 	valves[0].attach(PWMPort1);
 	valves[1].attach(PWMPort2);
+	writeOpening(0);
 	pressureSensor.attach(AnalogPort);
 }
 
@@ -125,7 +127,7 @@ float CHAMBER::readPressure(){
 
 	/************************customize the correct pressure souce according to the project**********/
 
-	//pressureRaw = pressureSensor.read();
+	pressureRaw = pressureSensor.read();
 	//pressureRaw = pressureSensorspi.read();
 	pressure=pressureRaw-pressureOffset;
 

@@ -20,7 +20,9 @@
 *******************Do not modify the following contents, unless you are aware what you are doing*********
  ********************************************************************************************************/
 #define ETHERCAT_ENABLED 0		//Enable EtherCAT at SPI1 at the sacrifice of some AD ports and PWM ports
-#define AD76x6_CHANNELNUM 	8
+
+#define AD76x6_CHANNELNUM 	16
+
 #define LT8500_CHANNELNUM  	48
 #define LTC2668_CHANNELNUM 	16
 #define PCA9685_CHANNELNUM 	16
