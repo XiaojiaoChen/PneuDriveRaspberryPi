@@ -57,17 +57,17 @@ void loop() {
 /*serial output using DMA*/
 void serialDisplay() {
 	//printf("Time: %d\r\n",millis());
-	printf("Time:%10lu    PressureCommand:Pressure(KPa)    Distance(mm)\r\n",
+	printf("Time:%10lu    PressureCommand:Pressure(HPa)    Distance(mm)\r\n",
 			millis());
 	for (int i = 0; i < SEGMENTNUM; i++) {
 		printf(
-				"     %hd:%hd   %hd:%hd   %hd:%hd   %hd:%hd   %hd:%hd   %hd:%hd    |     %hu,  %hu, %hu, %hu, %hu, %hu\r\n",
-				softArm.commandData.data[i][0].values[0],(int)(softArm.armSegments[i].bellows[0]->pressure),
-				softArm.commandData.data[i][1].values[0],(int)(softArm.armSegments[i].bellows[1]->pressure),
-				softArm.commandData.data[i][2].values[0],(int)(softArm.armSegments[i].bellows[2]->pressure),
-				softArm.commandData.data[i][3].values[0],(int)(softArm.armSegments[i].bellows[3]->pressure),
-				softArm.commandData.data[i][4].values[0],(int)(softArm.armSegments[i].bellows[4]->pressure),
-				softArm.commandData.data[i][5].values[0],(int)(softArm.armSegments[i].bellows[5]->pressure),
+				"     %4d:%4d   %4d:%4d   %4d:%hd   %4d:%4d   %4d:%4d   %4d:%4d    |     %2u,  %2u, %2u, %2u, %2u, %2u\r\n",
+				softArm.commandData.data[i][0].values[0],(int)(softArm.armSegments[i].bellows[0]->pressure/100),
+				softArm.commandData.data[i][1].values[0],(int)(softArm.armSegments[i].bellows[1]->pressure/100),
+				softArm.commandData.data[i][2].values[0],(int)(softArm.armSegments[i].bellows[2]->pressure/100),
+				softArm.commandData.data[i][3].values[0],(int)(softArm.armSegments[i].bellows[3]->pressure/100),
+				softArm.commandData.data[i][4].values[0],(int)(softArm.armSegments[i].bellows[4]->pressure/100),
+				softArm.commandData.data[i][5].values[0],(int)(softArm.armSegments[i].bellows[5]->pressure/100),
 				softArm.sensorData.data[i][0].distance,
 				softArm.sensorData.data[i][1].distance,
 				softArm.sensorData.data[i][2].distance,

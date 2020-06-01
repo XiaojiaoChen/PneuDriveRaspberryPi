@@ -81,7 +81,7 @@ positionTable{0,10,20,30,40,50,60,70,80,90,100,110,120}
 
 	fulOpening=1;
 	opening = 0;
-
+	pressureOffset=0;
 
 	inflatingFlag=1;
 	openingMinN = valveOpeningLimArray[PWMPort1/2][0];
@@ -150,7 +150,7 @@ float CHAMBER::filterPressure(){
 void CHAMBER::writePressure(float pNom)
 {
 
-	pressureCommand = CONSTRAIN(pNom,-100000,180000);
+	pressureCommand = CONSTRAIN(pNom,-100000,280000);
 
 	float pErr = pressureCommand-pressure;
 	if(pErr>pressureDeadZone)

@@ -51,7 +51,7 @@ void SOFT_ARM::readPressureAll()
 	//Read pressure information from sensorData(from CANbus) as the Chamber's pressure
 	for(int j=0;j<SEGMENTNUM;j++){
 		for(int i=0;i<BELLOWNUM;i++){
-			float pressureGaugeCan=sensorData.data[j][i].pressure*100;  //gauge Pa
+			float pressureGaugeCan=sensorData.data[j][i].pressure*100;  //abs Pa
 			armSegments[j].bellows[i]->readPressureExt(pressureGaugeCan);
 		}
 	}
@@ -67,7 +67,7 @@ void SOFT_ARM::writeCommandAll()
 
 			//write pressure command from commandData to the chamber
 			if(commandData.data[j][i].commandType==pressureCommandType){
-				float pressureCommandTemp=commandData.data[j][i].values[0]*1000;//gauge PA
+				float pressureCommandTemp=commandData.data[j][i].values[0]*100;//gauge PA
 				bellowCur->writePressure(pressureCommandTemp);
 			}
 			else if(commandData.data[j][i].commandType==openingCommandType){
