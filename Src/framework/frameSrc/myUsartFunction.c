@@ -56,16 +56,16 @@ void my_UsartInit()
 {
 
 	 //Usart 1 is connected to raspberry pi, we handle Tx, rosserial handles Rx
-	 myInitUsartMode(&huart1,usartDMACircularMode);
+	// myInitUsartMode(&huart1,usartDMACircularMode);
 
 	 //for application use
-	 myInitUsartMode(&huart2,usartIntMode);
+	// myInitUsartMode(&huart2,usartIntMode);
 
 	 //Usart 3 is connecting through usb by defaut, configured to DMA mode
 	 myInitUsartMode(&huart3,usartDMAIdleMode);
 
 	 //Enable printf Binany
-	 printfBin_init();
+	// printfBin_init();
 }
 
 static void myInitUsartMode(UART_HandleTypeDef *huart,USARTMode usartMode){
@@ -87,10 +87,10 @@ static void myInitUsartMode(UART_HandleTypeDef *huart,USARTMode usartMode){
 	else if(usartMode==usartDMAIdleMode){
 
 		 /*get ready for receive*/
-		 HAL_UART_Receive_DMA(uartDev->huart, uartDev->RxBuf, UART_RX_BUF_SIZE-1);
+	//	 HAL_UART_Receive_DMA(uartDev->huart, uartDev->RxBuf, UART_RX_BUF_SIZE-1);
 
 		 /*Enable USART_Rx IDLE Detection to stop USART1_Rx_DMA*/
-		 __HAL_UART_ENABLE_IT(uartDev->huart, UART_IT_IDLE);
+	//	 __HAL_UART_ENABLE_IT(uartDev->huart, UART_IT_IDLE);
 	}
 }
 

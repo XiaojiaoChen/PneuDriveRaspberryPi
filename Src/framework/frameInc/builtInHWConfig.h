@@ -21,8 +21,11 @@
  ********************************************************************************************************/
 #define ETHERCAT_ENABLED 0		//Enable EtherCAT at SPI1 at the sacrifice of some AD ports and PWM ports
 
-#define AD76x6_CHANNELNUM 	16
-
+#if(ADBOARD_TYPE==0)
+#define AD76x6_CHANNELNUM 	8
+#else
+#define AD76x6_CHANNELNUM  16
+#endif
 #define LT8500_CHANNELNUM  	48
 #define LTC2668_CHANNELNUM 	16
 #define PCA9685_CHANNELNUM 	16

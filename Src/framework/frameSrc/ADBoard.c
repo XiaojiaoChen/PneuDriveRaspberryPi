@@ -108,6 +108,7 @@ int ADBoard_SPICallback(SPI_HandleTypeDef *hspi)
 						ptADBoardDevices->ADTime=ptADBoardDevices->ADTimeEnd-ptADBoardDevices->ADTimeStart;
 					}
 					ret=0;
+					//printf("getAna\r\n");
 					break;
 				}
 
@@ -165,8 +166,8 @@ void ADBoard_Init()
 	ptADBoardDevices->ADTimeStart=0;
 	ptADBoardDevices->ADTimeEnd=0;
 
-	ptADBoardDevices->ADBoards[0].fMinVoltage = -5;
-	ptADBoardDevices->ADBoards[0].fMaxVoltage = 5;
+	ptADBoardDevices->ADBoards[0].fMinVoltage = -10;
+	ptADBoardDevices->ADBoards[0].fMaxVoltage = 10;
 	ptADBoardDevices->ADBoards[0].fRange = ptADBoardDevices->ADBoards[0].fMaxVoltage-ptADBoardDevices->ADBoards[0].fMinVoltage;
 	ptADBoardDevices->ADBoards[0].AD_spi = &hspi4;
 	ptADBoardDevices->ADBoards[0].CONV_DO_x=CONV_DO_x;

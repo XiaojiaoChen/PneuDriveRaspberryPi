@@ -15,17 +15,17 @@
 
 SOFT_ARM softArm;
 PNEUDRIVE pneudrive(2);
-int analogPort_source=BUILTIN_ANA_IN_NUM+7;
-int analogPort_sink=BUILTIN_ANA_IN_NUM+5;
-int analogPort_chamber0=BUILTIN_ANA_IN_NUM+3;
-int analogPort_chamber1=BUILTIN_ANA_IN_NUM+1;
+int analogPort_source=BUILTIN_ANA_IN_NUM+0;
+int analogPort_sink=BUILTIN_ANA_IN_NUM+1;
+int analogPort_chamber0=BUILTIN_ANA_IN_NUM+2;
+int analogPort_chamber1=BUILTIN_ANA_IN_NUM+3;
 
-int analogPort_laser=BUILTIN_ANA_IN_NUM+0;
+int analogPort_laser=BUILTIN_ANA_IN_NUM+7;
 
 float amp=45000;
 
 float offset=-5000;
-const uint32_t loopms=2;
+const uint32_t loopms=10;
 float fre=1;
 int numUpdateValue=1000;
 
@@ -33,7 +33,7 @@ uint32_t totalNum=0;
 
 float length=0;
 float pd;
-int32_t loop_gogogo=0;
+int32_t loop_gogogo=1;
 uint32_t localCounter=0;
 uint32_t t0,tcur;
 int8_t t0flag=0;
@@ -42,7 +42,7 @@ float externPd=0;
 float upstreamPressure=110000;
 float downstreamPressure=-70000;
 float sinbase=0;
-float ratio=0.3;
+float ratio=0.22;
 int32_t direction=1;
 float chamber0p=0;
 float chamber1p=0;
@@ -65,6 +65,7 @@ void setup() {
 
 	/*Configure the pump port and sensor parameter of the sink*/
 	pneudrive.pSink.attach(1,analogPort_sink);
+	pSink2.attach(7, analogPort_sink);
 
 	/*Attach the valves and pressure sensors of chamber 0 to corresponding ports.
 	 *Set the pressure sensor range. The parameter list are (vMin, vMax, pMin, pMax).
@@ -143,13 +144,13 @@ void loop() {
 /*serial output using DMA*/
 void serialDisplay() {
 	//printf("Time: %d\r\n",millis());
-	printf("%10lu %d  %d  %d  %d  %d %d %d %d %d\r\n",
+	printf("%10lu %d  %d %d %d %d %d %d\r\n",
 			millis(),
 			(int)(pneudrive.pSource.pressure/1000),
 			(int)(pneudrive.pSink.pressure/1000),
 			(int)(externPd/1000),
-			(int)(amp/1000),
-			(int)(offset/1000),
+//			(int)(amp/1000),
+//			(int)(offset/1000),
 			(int)(fre*10),
 			(int)(pneudrive.chambers[0]->pressure/1000),
 			(int)(length),
