@@ -3,7 +3,7 @@ myUsartFunction.c:71:13:myInitUsartMode	24	static
 myUsartFunction.c:97:21:getUsartDevice	16	static
 myUsartFunction.c:115:5:_write	24	static
 myUsartFunction.c:118:5:my_write_DMA	32	static
-myUsartFunction.c:161:6:HAL_UART_TxCpltCallback	32	static
+myUsartFunction.c:161:6:HAL_UART_TxCpltCallback	16	static
 myUsartFunction.c:207:6:myUsartDMAIdleIRQ	32	static
 myUsartFunction.c:224:6:myUsartDMAIRQ	16	static
 myUsartFunction.c:237:6:myUsartIntIRQ	24	static

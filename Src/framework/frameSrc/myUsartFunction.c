@@ -160,28 +160,28 @@ int my_write_DMA(UART_HandleTypeDef *huart, uint8_t *pSrc, int len)
 /*this function would overwrite HAL's weak HAL_UART_TxCpltCallback for all usart*/
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
-	UART_DEVICE *uartDev=getUsartDevice(huart);
-	if(uartDev->usartmode==usartDMAIdleMode){
-		UART_DEVICE *uartDev=getUsartDevice(huart);
-		 /*update information*/
-		 uartDev->TxEnd = micros();
-		 uartDev->lastTxTime = uartDev->TxEnd - uartDev->TxStart;
-		 uartDev->lastTxCount = uartDev->countTxBuf[uartDev->consumerTxBufNum];
-
-		/*One consumption done. move consumer forward*/
-		uartDev->consumerTxBufNum++;
-		uartDev->consumerTxBufNum%=UART_TX_BUF_NUM;
-
-		/*reduce one bufferedTxNum*/
-		 uartDev->bufferedTxNum--;
-
-		/*If it is still positive, go on consume next*/
-		if(uartDev->bufferedTxNum>0){
-			uartDev->TxStart = micros();
-			uint8_t *px = &uartDev->TxBuf[uartDev->consumerTxBufNum][0];
-			HAL_UART_Transmit_DMA(uartDev->huart,px,uartDev->countTxBuf[uartDev->consumerTxBufNum]);
-		}
-	}
+//	UART_DEVICE *uartDev=getUsartDevice(huart);
+//	if(uartDev->usartmode==usartDMAIdleMode){
+//		UART_DEVICE *uartDev=getUsartDevice(huart);
+//		 /*update information*/
+//		 uartDev->TxEnd = micros();
+//		 uartDev->lastTxTime = uartDev->TxEnd - uartDev->TxStart;
+//		 uartDev->lastTxCount = uartDev->countTxBuf[uartDev->consumerTxBufNum];
+//
+//		/*One consumption done. move consumer forward*/
+//		uartDev->consumerTxBufNum++;
+//		uartDev->consumerTxBufNum%=UART_TX_BUF_NUM;
+//
+//		/*reduce one bufferedTxNum*/
+//		 uartDev->bufferedTxNum--;
+//
+//		/*If it is still positive, go on consume next*/
+//		if(uartDev->bufferedTxNum>0){
+//			uartDev->TxStart = micros();
+//			uint8_t *px = &uartDev->TxBuf[uartDev->consumerTxBufNum][0];
+//			HAL_UART_Transmit_DMA(uartDev->huart,px,uartDev->countTxBuf[uartDev->consumerTxBufNum]);
+//		}
+//	}
 
 }
 

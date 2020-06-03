@@ -143,8 +143,10 @@ void loop() {
 
 /*serial output using DMA*/
 void serialDisplay() {
+	static char buf[200];
+	int len;
 	//printf("Time: %d\r\n",millis());
-	printf("%10lu %d  %d %d %d %d %d %d\r\n",
+	len=sprintf(buf,"%10lu %d  %d %d %d %d %d %d\r\n",
 			millis(),
 			(int)(pneudrive.pSource.pressure/1000),
 			(int)(pneudrive.pSink.pressure/1000),
@@ -156,6 +158,7 @@ void serialDisplay() {
 			(int)(length),
 			totalNum
 			);
+	HAL_UART_Transmit_DMA(&huart3,(uint8_t *)buf,len);
 }
 
 //called when serial input receive string with ending '\r\n'
