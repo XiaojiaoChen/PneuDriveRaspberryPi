@@ -69,7 +69,7 @@ void packQuaternion(QUATERNION *qOri, QUATERNIONCOMPACT *qCom);
 /*unpackQ should be used in decoder, i.e. PC host*/
 void unpackQuaternion(QUATERNIONCOMPACT *qCom, QUATERNION *qOri);
 
-void decodeSensorData(SENSORDATACOMPACT*,SENSORDATA*);
+void decodeSensorData(SENSORDATACOMPACT*,SENSORDATA*,int16_t);
 
 #ifdef __cplusplus
 }

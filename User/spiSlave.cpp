@@ -36,7 +36,9 @@ void slaveSPITxRxCpltCallback(SPI_HandleTypeDef *hspi){
 
 void slaveSPIErrorCallback(SPI_HandleTypeDef *hspi){
 	if(hspi==hspiSlave){
-		printf("Error SPI 1 communication with RPI4\r\n");
+		HAL_SPI_StateTypeDef hspistate=HAL_SPI_GetState(hspi);
+		uint32_t hspierror=HAL_SPI_GetError(hspi);
+		printf("Error communication with RPI4, SPI state: %d, SPI Errorcode:%d\r\n",hspistate,hspierror);
 		/*If an error occurs, we only need to re-arm the SPI slave, ready to receive and transmit*/
 		HAL_SPI_TransmitReceive_DMA(&hspi1, (uint8_t *)(&softArm.sensorData),  (uint8_t *)(&softArm.commandDataBuffer), sizeof(SPIDATA_R));
 	}

@@ -37,7 +37,7 @@ static void PWMBoardSPI_bufferCorrection(uint16_t num,uint8_t value);
 static void PWMBoardSPI_setOutputEnable(uint8_t flag);
 static void PWMBoardSPI_setCorrectionEnable(uint8_t flag);
 static void PWMBoardSPI_startPWMCK(float fre);
-
+static void PWMBoardSPI_reset();
 
 static void PWM_CS_LOW()
 {
@@ -51,9 +51,12 @@ static void PWM_CS_HIGH()
 
 static void PWMBoardSPI_Callback()
 {
-	//the high pulse duration should be less than 5us to maintain the LDI functionality
+	//the high pulse duration should be less than 5us to maintain the LDI functionality, larger than 8ns
 	PWM_CS_HIGH();
-	delay_us(2);
+	__NOP();
+	__NOP();
+	__NOP();
+	__NOP();
 	PWM_CS_LOW();
 }
 
@@ -61,6 +64,17 @@ static void PWMBoardSPI_sendFrame()
 {
 	HAL_SPI_TransmitReceive(ptPWMBoardSPI->PWM_spi,(uint8_t *)(ptPWMBoardSPI->CMDBuffer),(uint8_t *)(ptPWMBoardSPI->StatusBuffer),PWMBoardSPI_FrameLength,2);
 	PWMBoardSPI_Callback();
+}
+
+//We disabled the correction register. However, the Correction will be enabled by default when accidently reset. We can determine if the board has been reset by this flag.
+//return 1 for disabled. return 0 for enabled.
+static uint8_t PWMBoardSPI_getCorEnabled(){
+	uint8_t ret=0xFF;
+	for(int i=0;i<PWMBOARDSPI_NUM;i++)
+	{
+		ret &= ptPWMBoardSPI->StatusBuffer[i][LT8500_FrameLength-1];
+	}
+	return (uint8_t)(ret&0x01);
 }
 
 static void PWMBoardSPI_bufferCMD(uint8_t cmd)
@@ -147,10 +161,14 @@ static void PWMBoardSPI_setOutputEnable(uint8_t flag)
 
 static void PWMBoardSPI_setCorrectionEnable(uint8_t flag)
 {
-	if((ptPWMBoardSPI->StatusBuffer[0][LT8500_FrameLength-1]&0x01)!=(1-flag))
+	for(int i=0;i<PWMBOARDSPI_NUM;i++)
 		{
-		PWMBoardSPI_bufferCMD(LT8500_CMD_CorrentionToggle);
-		PWMBoardSPI_sendFrame();
+		if((ptPWMBoardSPI->StatusBuffer[i][LT8500_FrameLength-1]&0x01)!=(1-flag))
+			{
+			PWMBoardSPI_bufferCMD(LT8500_CMD_CorrentionToggle);
+			PWMBoardSPI_sendFrame();
+			break;
+			}
 		}
 }
 
@@ -194,6 +212,11 @@ void PWMBoardSPI_flushDutyAll()
 	{
 		ptPWMBoardSPI->dirtyDuty=0;
 		PWMBoardSPI_sendFrame();
+	}
+
+	//If cor is enabled, meaning that the board has been reset accidentally. we need to reinit it.
+	if(PWMBoardSPI_getCorEnabled()==0){
+		PWMBoardSPI_reset();
 	}
 	ptPWMBoardSPI->lastUpdateTime=micros()-c1;
 }
@@ -240,5 +263,36 @@ void PWMBoardSPI_init()
 	PWMBoardSPI_setOutputEnable(1);
 
 }
+
+
+static void PWMBoardSPI_reset()
+{
+
+//	PWMBuiltInStopChannel(ptPWMBoardSPI->Frequency_PWMPortNum);
+
+	//initialization
+	//1. Apply power and drive LDIBLANK low. SDO will go low when the on-chip power-on-reset (POR) de-asserts.
+//	PWM_CS_LOW();
+
+//	//2.Send a correction register frame (CMD = 0x20) on the serial interface. This sets the correction factor on each channel.
+//	PWMBoardSPI_writeCorrectionAll(63);
+//
+//	//3. Send an update frame (CMD = 0x00 or CMD = 0x10) on the serial interface. This sets the pulse width of each channel.
+//	for(int i=0;i<PWMBOARDSPI_CHANNELNUM;i++)
+//	{
+//		PWMBoardSPI_bufferDutyChannel(i,0);
+//	}
+//	PWMBoardSPI_sendFrame();
+
+//	//4. start PWM clock (PWMCK)
+//	PWMBoardSPI_startPWMCK(40);
+
+	PWMBoardSPI_setCorrectionEnable(0);
+
+	//5. Send an output enable frame (CMD = 0x30) on the serial interface. This enables the modulated pulses on the PWM[48:1] outputs
+	PWMBoardSPI_setOutputEnable(1);
+
+}
+
 
 #endif

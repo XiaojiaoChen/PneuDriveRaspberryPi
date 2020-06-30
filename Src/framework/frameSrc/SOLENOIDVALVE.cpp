@@ -37,13 +37,15 @@ float SOLENOID_VALVE::readDuty()
 void SOLENOID_VALVE::writeDuty(float dut)
 {
 	dut = CONSTRAIN(dut,dutyMin,dutyMax);
-	if(fabsf(dut-duty)>1e-6)
-	{
-		 duty = dut;
-		_duty= (PWM_DIGITAL_OUTPUT_REVERSED == 0)?duty:(1-duty);
-		PWMWriteDuty(PWMPort,_duty);
-	}
-
+//	if(fabsf(dut-duty)>1e-6)
+//	{
+//		 duty = dut;
+//		_duty= (PWM_DIGITAL_OUTPUT_REVERSED == 0)?duty:(1-duty);
+//		PWMWriteDuty(PWMPort,_duty);
+//	}
+	 duty = dut;
+	_duty= (PWM_DIGITAL_OUTPUT_REVERSED == 0)?duty:(1-duty);
+	PWMWriteDuty(PWMPort,_duty);
 }
 
 

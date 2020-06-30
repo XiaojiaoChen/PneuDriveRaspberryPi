@@ -26,6 +26,9 @@ void setup() {
 	/*soft arm chambers' PWM port mapping*/
 	softArm.setupChamberPorts();
 
+	/*soft arm Pumps' port mapping*/
+	softArm.setupPumps(0,BUILTIN_ANA_IN_NUM+0,1,BUILTIN_ANA_IN_NUM+1);
+
 	/*start canBus receive*/
 	canConfig();
 
@@ -39,7 +42,8 @@ void setup() {
 void loop() {
 
 	/***************Handle string commands from the raspberry pi********************/
-	softArm.execInfoCommand(softArm.commandData.infos);
+	//softArm.execInfoCommand(softArm.commandData.infos);
+	softArm.maintainPressure(100000,-60000);
 
 	//update chamber's pressure from the CANbus************************/
 	softArm.readPressureAll();
@@ -57,11 +61,11 @@ void loop() {
 /*serial output using DMA*/
 void serialDisplay() {
 	//printf("Time: %d\r\n",millis());
-	printf("Time:%10lu    PressureCommand:Pressure(HPa)    Distance(mm)\r\n",
-			millis());
+	printf("Time:%10lu    PressureCommand:Pressure(HPa)    Distance(mm)  pSource:%d HPa  pSink:%d HPa\r\n",
+			millis(),(int)(softArm.pSource.pressure/100),(int)(softArm.pSink.pressure/100));
 	for (int i = 0; i < SEGMENTNUM; i++) {
 		printf(
-				"     %4d:%4d   %4d:%4d   %4d:%hd   %4d:%4d   %4d:%4d   %4d:%4d    |     %2u,  %2u, %2u, %2u, %2u, %2u\r\n",
+				"     %4d:%4d   %4d:%4d   %4d:%4d   %4d:%4d   %4d:%4d   %4d:%4d    |     %2u,  %2u, %2u, %2u, %2u, %2u\r\n",
 				softArm.commandData.data[i][0].values[0],(int)(softArm.armSegments[i].bellows[0]->pressure/100),
 				softArm.commandData.data[i][1].values[0],(int)(softArm.armSegments[i].bellows[1]->pressure/100),
 				softArm.commandData.data[i][2].values[0],(int)(softArm.armSegments[i].bellows[2]->pressure/100),
@@ -79,14 +83,14 @@ void serialDisplay() {
 
 //called when serial input receive string with ending '\r\n'
 void serial3Callback(char *pSerialReceiveBuffer) {
-
-	if (pSerialReceiveBuffer[0] == 'k') {
-		//	/**Write command for each actuator, q&r of kalman filter for laser, */
-//		softArm.canBusCommand[0] = 0xFF;
-//		softArm.canBusCommand[1] = 0xEF;
-//		softArm.canBusCommand[2] = 0xFE;
-//		softArm.canBusCommand[3] = 0xAF;
-//		canSend();
-	}
+	softArm.execInfoCommand(pSerialReceiveBuffer);
+//	if (pSerialReceiveBuffer[0] == 'k') {
+//		//	/**Write command for each actuator, q&r of kalman filter for laser, */
+////		softArm.canBusCommand[0] = 0xFF;
+////		softArm.canBusCommand[1] = 0xEF;
+////		softArm.canBusCommand[2] = 0xFE;
+////		softArm.canBusCommand[3] = 0xAF;
+////		canSend();
+//	}
 }
 

@@ -87,11 +87,10 @@ void unpackQuaternion(QUATERNIONCOMPACT *qCom,QUATERNION *qOri){
 }
 
 
-void decodeSensorData(SENSORDATACOMPACT *scom, SENSORDATA *s) {
-
+void decodeSensorData(SENSORDATACOMPACT *scom, SENSORDATA *s,int16_t pOff) {
 
 #if COMPACT_VERSION_PRESSURE_HPA==1
-	s->pressure=scom->pressure;    //absolute hpa
+	s->pressure=scom->pressure-pOff; //gauge hpa
 	s->distance= ((uint16_t)(scom->distance<<3)
 			+(uint16_t)(scom->quaternionCom.distanceBit2<<2)
 			+(uint16_t)(scom->quaternionCom.distanceBit1<<1)

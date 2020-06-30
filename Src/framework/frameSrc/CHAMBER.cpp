@@ -14,8 +14,8 @@
 static float myInterpolate(int num,float *x, float *y,float x0);
 const float CHAMBER::effectiveRadius=0.027;
 const float CHAMBER::effectiveArea=M_PI*effectiveRadius*effectiveRadius;
-const float CHAMBER::pressureMin= 0;
-const float CHAMBER::pressureMax=201325;
+const float CHAMBER::pressureMin= -70000;
+const float CHAMBER::pressureMax=70000;
 
 static float valveOpeningLimArray[30][4]={
 		{-1,-0.95,0.95,1},//0
@@ -75,21 +75,25 @@ positionTable{0,10,20,30,40,50,60,70,80,90,100,110,120}
 	pressureFil=0;
 	pressuredot=0;
 	pressureCommand=pressure;
-	pressureDeadZone = 2000;
-	pressureMaxP=30000;
-	pressureMinN=-30000;
+	pressureDeadZone = 1500;
+	pressureMaxP=4000;
+	pressureMinN=-4000;
 
 	fulOpening=1;
 	opening = 0;
 	pressureOffset=0;
 
 	inflatingFlag=1;
-	openingMinN = valveOpeningLimArray[PWMPort1/2][0];
-	openingMaxN = valveOpeningLimArray[PWMPort1/2][1];
-	openingMinP = valveOpeningLimArray[PWMPort1/2][2];
-	openingMaxP = valveOpeningLimArray[PWMPort1/2][3];
+//	openingMinN = valveOpeningLimArray[PWMPort1/2][0];
+//	openingMaxN = valveOpeningLimArray[PWMPort1/2][1];
+//	openingMinP = valveOpeningLimArray[PWMPort1/2][2];
+//	openingMaxP = valveOpeningLimArray[PWMPort1/2][3];
+	openingMinN = -0.9;
+	openingMaxN = -0.7;
+	openingMinP = 0.13;
+	openingMaxP = 0.2;
 	inflateVelocity=1;
-
+	pressureCanOffset=0;
 	pressureController = NewPressureController(200000,0,DEFAULTCONTROLLDT,1e10,40000,2e-5,0,0,6e-5,0.3);
 	//pressureController = NewPressureController(200000,0,CONTROLLDT,1e13,1000,2e-5,0,0,6e-5,0.3);
 	curOpeningNum=0;
@@ -132,11 +136,10 @@ float CHAMBER::readPressure(){
 	return pressure;
 }
 
-float CHAMBER::readPressureExt(float pressureExt){
+float CHAMBER::readPressureCan(int16_t pressureCan){
 
-	/************************read from external pressure source**********/
-	pressureRaw=pressureExt;
-	pressure=pressureRaw-pressureOffset;
+	/************************read from external pressure source CAN bus**********/
+	pressure=pressureCan*100;
 
 	return pressure;
 }
@@ -150,21 +153,27 @@ float CHAMBER::filterPressure(){
 void CHAMBER::writePressure(float pNom)
 {
 
-	pressureCommand = CONSTRAIN(pNom,-100000,280000);
+	pressureCommand = CONSTRAIN(pNom,pressureMin,pressureMax);
 
 	float pErr = pressureCommand-pressure;
 	if(pErr>pressureDeadZone)
 	{
-		opening=MAPCONSTRAIN(pErr,pressureDeadZone,pressureMaxP*inflateVelocity,openingMinP,openingMaxP);
-		//opening=1;
+		if(pErr<pressureMaxP*inflateVelocity)
+			opening=MAPCONSTRAIN(pErr,pressureDeadZone,pressureMaxP*inflateVelocity,openingMinP,openingMaxP);
+		else
+			opening=MAPCONSTRAIN(pErr,pressureMaxP*inflateVelocity,pressureMaxP*1.5, openingMaxP,1);
+			//opening=1;
 	}
 	else if(pErr<-pressureDeadZone)
 	{
 
 		//opening=pressureController->controlPressure(pressureController,pressureFil,pressureCommand);
+		if(pErr>pressureMinN*inflateVelocity)
+			opening=MAPCONSTRAIN(pErr,pressureMinN*inflateVelocity,-pressureDeadZone,openingMinN,openingMaxN);
+		else
+			opening=MAPCONSTRAIN(pErr,1.5*pressureMinN*inflateVelocity,pressureMinN*inflateVelocity,-1,openingMinN);
 
-		opening=MAPCONSTRAIN(pErr,pressureMinN*inflateVelocity,-pressureDeadZone,openingMinN,openingMaxN);
-		//opening=-1;
+			//opening=-1;
 	}
 	else
 	{
@@ -177,7 +186,7 @@ void CHAMBER::writePressure(float pNom)
 void CHAMBER::writePressure(float pNom,float pNomDot)
 {
 
-	pressureCommand = CONSTRAIN(pNom,-100000,180000);
+	pressureCommand = CONSTRAIN(pNom,pressureMin,pressureMax);
 	float pErr = pressureCommand-pressure;
 	float pErrDot=pNomDot;//-pressureController->pKalmanFilter->X.pData[1];
 

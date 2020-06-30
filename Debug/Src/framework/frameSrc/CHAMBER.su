@@ -1,20 +1,20 @@
 CHAMBER.cpp:64:1:CHAMBER::CHAMBER(int, int, int)	32	static
-CHAMBER.cpp:103:6:void CHAMBER::attach(int, int, int)	24	static
-CHAMBER.cpp:111:6:void CHAMBER::attachPWM(int, int)	24	static
-CHAMBER.cpp:116:6:void CHAMBER::attachSensor(int)	16	static
-CHAMBER.cpp:120:6:void CHAMBER::zeroPressure()	16	static
-CHAMBER.cpp:124:7:float CHAMBER::readPressure()	16	static
-CHAMBER.cpp:135:7:float CHAMBER::readPressureExt(float)	16	static
-CHAMBER.cpp:144:7:float CHAMBER::filterPressure()	16	static
-CHAMBER.cpp:150:6:void CHAMBER::writePressure(float)	24	static
-CHAMBER.cpp:177:6:void CHAMBER::writePressure(float, float)	32	static
-CHAMBER.cpp:200:6:void CHAMBER::writeOpeningSequence()	16	static
-CHAMBER.cpp:218:7:float CHAMBER::readPosition()	16	static
-CHAMBER.cpp:222:6:void CHAMBER::writePosition(float)	16	static
-CHAMBER.cpp:225:7:float CHAMBER::readOpening()	16	static
-CHAMBER.cpp:229:6:void CHAMBER::writeOpening(float)	16	static
-CHAMBER.cpp:244:6:void CHAMBER::setSensorRange_GaugePa(float, float, float, float)	32	static
-CHAMBER.cpp:249:6:void CHAMBER::setValveOpeningLimit(float, float, float, float)	32	static
-CHAMBER.cpp:256:7:float CHAMBER::pressure2position(float)	16	static
-CHAMBER.cpp:260:7:float CHAMBER::position2pressure(float)	16	static
-CHAMBER.cpp:264:14:float myInterpolate(int, float*, float*, float)	32	static
+CHAMBER.cpp:107:6:void CHAMBER::attach(int, int, int)	24	static
+CHAMBER.cpp:115:6:void CHAMBER::attachPWM(int, int)	24	static
+CHAMBER.cpp:120:6:void CHAMBER::attachSensor(int)	16	static
+CHAMBER.cpp:124:6:void CHAMBER::zeroPressure()	16	static
+CHAMBER.cpp:128:7:float CHAMBER::readPressure()	16	static
+CHAMBER.cpp:139:7:float CHAMBER::readPressureCan(int16_t)	16	static
+CHAMBER.cpp:147:7:float CHAMBER::filterPressure()	16	static
+CHAMBER.cpp:153:6:void CHAMBER::writePressure(float)	24	static
+CHAMBER.cpp:186:6:void CHAMBER::writePressure(float, float)	32	static
+CHAMBER.cpp:209:6:void CHAMBER::writeOpeningSequence()	16	static
+CHAMBER.cpp:227:7:float CHAMBER::readPosition()	16	static
+CHAMBER.cpp:231:6:void CHAMBER::writePosition(float)	16	static
+CHAMBER.cpp:234:7:float CHAMBER::readOpening()	16	static
+CHAMBER.cpp:238:6:void CHAMBER::writeOpening(float)	16	static
+CHAMBER.cpp:253:6:void CHAMBER::setSensorRange_GaugePa(float, float, float, float)	32	static
+CHAMBER.cpp:258:6:void CHAMBER::setValveOpeningLimit(float, float, float, float)	32	static
+CHAMBER.cpp:265:7:float CHAMBER::pressure2position(float)	16	static
+CHAMBER.cpp:269:7:float CHAMBER::position2pressure(float)	16	static
+CHAMBER.cpp:273:14:float myInterpolate(int, float*, float*, float)	32	static

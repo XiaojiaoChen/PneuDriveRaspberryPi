@@ -58,9 +58,13 @@ public:
 	int16_t pressureOffset[SEGMENTNUM][BELLOWNUM];
 	int16_t laserOffset[SEGMENTNUM][BELLOWNUM];
 
+	PRESSURE_SOURCE pSource;
+	PRESSURE_SOURCE pSink;
 
 	uint8_t canBusCommand[8];
 	void setupChamberPorts();
+	void setupPumps(int d1,int a1, int d2, int a2);
+	void maintainPressure(float posP, float negP);
 	void readPressureAll();
 	void zeroPressureAll();
 	void writeCommandAll();

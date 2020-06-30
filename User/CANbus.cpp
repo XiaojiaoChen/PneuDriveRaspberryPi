@@ -197,7 +197,8 @@ static HAL_StatusTypeDef my_HAL_CAN_GetRxMessage(CAN_HandleTypeDef *hcan, uint32
 
 
     /**********************  Added Docode the sensor Data to SPI buffer*******************************/
-    decodeSensorData(&softArm.sensorDataBuffer[i][j],&(softArm.sensorData.data[i][j]));
+
+    decodeSensorData(&softArm.sensorDataBuffer[i][j],&(softArm.sensorData.data[i][j]),softArm.armSegments[i].bellows[j]->pressureCanOffset);
     /*******************************************************************/
 
 
