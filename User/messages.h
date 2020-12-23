@@ -50,7 +50,7 @@ typedef struct SENSORDATACOMPACT_TAG {
 
 typedef struct SENSORDATA_TAG {
 	int16_t pressure;
-	uint16_t distance;
+	int16_t distance;
 	QUATERNION quaternion;
 }SENSORDATA;
 
@@ -69,7 +69,11 @@ void packQuaternion(QUATERNION *qOri, QUATERNIONCOMPACT *qCom);
 /*unpackQ should be used in decoder, i.e. PC host*/
 void unpackQuaternion(QUATERNIONCOMPACT *qCom, QUATERNION *qOri);
 
-void decodeSensorData(SENSORDATACOMPACT*,SENSORDATA*,int16_t);
+uint16_t unpackPressure(SENSORDATACOMPACT *scom);
+
+uint16_t unpackPosition(SENSORDATACOMPACT *scom);
+
+void decodeSensorData(SENSORDATACOMPACT*,SENSORDATA*,int16_t,int16_t);
 
 #ifdef __cplusplus
 }

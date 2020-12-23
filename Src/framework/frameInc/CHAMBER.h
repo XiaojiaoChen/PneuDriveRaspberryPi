@@ -36,8 +36,9 @@ public:
 	void writePressure(float pressureCommand);
 	void writePressure(float pNom,float pNomDot);
 
-	float readPosition();
-	void writePosition(float positionCommand);
+	int16_t readPosition();
+	int16_t readPositionCan(int16_t positionExt);
+	void writePosition(int16_t positionCommand);
 
 	float readOpening();
 	void writeOpening(float opening);
@@ -68,6 +69,10 @@ public:
 	float pressureRaw;
 	float pressureOffset;
 
+	int16_t position;
+	int16_t positionRaw;
+	int16_t positionOffset;
+
 	float filterBeta;
 	float pressureCommand;
 	int inflatingFlag;
@@ -83,16 +88,10 @@ public:
 	float pressure2position(float);
 	float position2pressure(float);
 	void zeroPressure();
-
-	void zeroPressureCan();
-	int16_t pressureCanOffset;
+	void zeroPosition();
 
 	void setValveOpeningLimit(float ominN,float omaxN,float ominP,float omaxP);
 private:
-	float length;
-	float lengthCommand;
-
-
 
 
 	static const float effectiveRadius;

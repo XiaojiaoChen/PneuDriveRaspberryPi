@@ -1,4 +1,6 @@
 messages.c:19:6:packQuaternion	24	static
 messages.c:51:6:unpackQuaternion	40	static
 messages.c:90:6:decodeSensorData	24	static
-messages.c:106:21:fastSqrt32	24	static
+messages.c:96:10:unpackPressure	16	static
+messages.c:103:10:unpackPosition	24	static
+messages.c:116:21:fastSqrt32	24	static

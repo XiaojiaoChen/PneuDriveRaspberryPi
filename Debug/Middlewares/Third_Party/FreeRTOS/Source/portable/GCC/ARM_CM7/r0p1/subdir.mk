@@ -6,11 +6,11 @@
 C_SRCS += \
 ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/port.c 
 
-OBJS += \
-./Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/port.o 
-
 C_DEPS += \
 ./Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/port.d 
+
+OBJS += \
+./Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/port.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

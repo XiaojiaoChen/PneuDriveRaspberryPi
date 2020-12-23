@@ -67,6 +67,7 @@ public:
 	void maintainPressure(float posP, float negP);
 	void readPressureAll();
 	void zeroPressureAll();
+	void zeroPositionAll();
 	void writeCommandAll();
 	void execInfoCommand(char *);
 };

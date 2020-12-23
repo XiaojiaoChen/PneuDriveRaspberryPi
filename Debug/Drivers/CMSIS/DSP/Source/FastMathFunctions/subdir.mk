@@ -13,16 +13,6 @@ C_SRCS += \
 ../Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q15.c \
 ../Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.c 
 
-OBJS += \
-./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_cos_f32.o \
-./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_cos_q15.o \
-./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_cos_q31.o \
-./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sin_f32.o \
-./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sin_q15.o \
-./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sin_q31.o \
-./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q15.o \
-./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.o 
-
 C_DEPS += \
 ./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_cos_f32.d \
 ./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_cos_q15.d \
@@ -32,6 +22,16 @@ C_DEPS += \
 ./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sin_q31.d \
 ./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q15.d \
 ./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.d 
+
+OBJS += \
+./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_cos_f32.o \
+./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_cos_q15.o \
+./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_cos_q31.o \
+./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sin_f32.o \
+./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sin_q15.o \
+./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sin_q31.o \
+./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q15.o \
+./Drivers/CMSIS/DSP/Source/FastMathFunctions/arm_sqrt_q31.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

@@ -215,9 +215,9 @@ void PWMBoardSPI_flushDutyAll()
 	}
 
 	//If cor is enabled, meaning that the board has been reset accidentally. we need to reinit it.
-	if(PWMBoardSPI_getCorEnabled()==0){
-		PWMBoardSPI_reset();
-	}
+//	if(PWMBoardSPI_getCorEnabled()==0){
+//		PWMBoardSPI_reset();
+//	}
 	ptPWMBoardSPI->lastUpdateTime=micros()-c1;
 }
 

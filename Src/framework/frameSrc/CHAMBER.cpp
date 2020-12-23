@@ -17,49 +17,6 @@ const float CHAMBER::effectiveArea=M_PI*effectiveRadius*effectiveRadius;
 const float CHAMBER::pressureMin= -70000;
 const float CHAMBER::pressureMax=70000;
 
-static float valveOpeningLimArray[30][4]={
-		{-1,-0.95,0.95,1},//0
-		{-1,-0.95,0.95,1},//1
-		{-1,-0.95,0.95,1},//2
-		{-1,-0.95,0.95,1},//3
-		{-1,-0.95,0.95,1},//4
-
-		{-1,-0.95,0.95,1},//5
-		{-0.163,-0.135,0.1,0.12},//6
-		{-0.45,-0.26,0.099,0.12},//7
-		{-0.245,-0.135,0.099,0.12},//8
-		{-0.245,-0.135,0.092,0.115},//9
-
-		{-0.245,-0.135,0.099,0.12},//10
-		{-0.245,-0.135,0.099,0.12},//11
-		{-0.235,-0.13,0.099,0.12},//12
-		{-0.245,-0.135,0.099,0.12},//13
-		{-0.165,-0.111,0.099,0.12},//14
-
-		{-0.245,-0.135,0.099,0.12},//15
-		{-0.185,-0.125,0.099,0.12},//16
-		{-0.221,-0.135,0.099,0.12},//17
-		{-0.245,-0.135,0.099,0.12},//18
-		{-0.245,-0.135,0.115,0.145},//19
-
-		{-0.245,-0.135,0.098,0.12},//20
-		{-0.245,-0.165,0.112,0.126},//21
-		{-0.245,-0.135,0.106,0.125},//22
-		{-0.245,-0.135,0.099,0.12},//23
-		{-0.245,-0.135,0.099,0.12},//24
-
-		{-0.245,-0.135,0.1,0.12},//25
-		{-0.27,-0.16,0.1,0.12},//26
-		{-0.245,-0.135,0.105,0.12},//27
-		{-0.245,-0.135,0.09,0.11},//28
-		{-0.245,-0.135,0.099,0.12}//29
-};
-
-
-
-
-
-
 
 CHAMBER::CHAMBER(int PWMPort1,int PWMPort2,int PressurePort):
 valves{PWMPort1,PWMPort2},
@@ -68,14 +25,13 @@ pressureTable{0,27000,48600,65600,79000,90000,100000,109000,119000,130400,145000
 positionTable{0,10,20,30,40,50,60,70,80,90,100,110,120}
 {
 
-	length=0.3;
-	lengthCommand = length;
 	filterBeta=0.01;
 	pressure=0;
 	pressureFil=0;
+	pressureRaw=0;
 	pressuredot=0;
 	pressureCommand=pressure;
-	pressureDeadZone = 1500;
+	pressureDeadZone = 1000;
 	pressureMaxP=4000;
 	pressureMinN=-4000;
 
@@ -83,17 +39,20 @@ positionTable{0,10,20,30,40,50,60,70,80,90,100,110,120}
 	opening = 0;
 	pressureOffset=0;
 
+	position=0;
+	positionOffset=0;
+	positionRaw=0;
+
 	inflatingFlag=1;
 //	openingMinN = valveOpeningLimArray[PWMPort1/2][0];
 //	openingMaxN = valveOpeningLimArray[PWMPort1/2][1];
 //	openingMinP = valveOpeningLimArray[PWMPort1/2][2];
 //	openingMaxP = valveOpeningLimArray[PWMPort1/2][3];
-	openingMinN = -0.9;
-	openingMaxN = -0.7;
-	openingMinP = 0.13;
-	openingMaxP = 0.2;
+	openingMinN = -0.95;
+	openingMaxN = -0.85;
+	openingMinP = 0.2;
+	openingMaxP = 0.53;
 	inflateVelocity=1;
-	pressureCanOffset=0;
 	pressureController = NewPressureController(200000,0,DEFAULTCONTROLLDT,1e10,40000,2e-5,0,0,6e-5,0.3);
 	//pressureController = NewPressureController(200000,0,CONTROLLDT,1e13,1000,2e-5,0,0,6e-5,0.3);
 	curOpeningNum=0;
@@ -139,8 +98,8 @@ float CHAMBER::readPressure(){
 float CHAMBER::readPressureCan(int16_t pressureCan){
 
 	/************************read from external pressure source CAN bus**********/
-	pressure=pressureCan*100;
-
+	pressureRaw=pressureCan*100;
+	pressure=pressureRaw-pressureOffset;
 	return pressure;
 }
 
@@ -224,11 +183,27 @@ void CHAMBER::writeOpeningSequence()
 
 
 
-float CHAMBER::readPosition()
-{
-	return length;
+//mm position
+void CHAMBER::zeroPosition(){
+	positionOffset = positionRaw;
 }
-void CHAMBER::writePosition(float pos){
+
+int16_t CHAMBER::readPosition(){
+	position=positionRaw-positionOffset;
+	return position;
+}
+
+int16_t CHAMBER::readPositionCan(int16_t positionCan){
+	/************************read from external position source CAN bus**********/
+
+	positionRaw=positionCan;//mm
+	position=positionRaw-positionOffset;
+
+	return position;
+}
+
+
+void CHAMBER::writePosition(int16_t pos){
 }
 
 float CHAMBER::readOpening()

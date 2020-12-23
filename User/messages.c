@@ -87,21 +87,31 @@ void unpackQuaternion(QUATERNIONCOMPACT *qCom,QUATERNION *qOri){
 }
 
 
-void decodeSensorData(SENSORDATACOMPACT *scom, SENSORDATA *s,int16_t pOff) {
+void decodeSensorData(SENSORDATACOMPACT *scom, SENSORDATA *s,int16_t pOff,int16_t disOff) {
 
-#if COMPACT_VERSION_PRESSURE_HPA==1
-	s->pressure=scom->pressure-pOff; //gauge hpa
-	s->distance= ((uint16_t)(scom->distance<<3)
-			+(uint16_t)(scom->quaternionCom.distanceBit2<<2)
-			+(uint16_t)(scom->quaternionCom.distanceBit1<<1)
-			+(uint16_t)(scom->quaternionCom.distanceBit0));
-#else
-	s->pressure=scom->pressure;    //absolute
-	s->distance=scom->distance;
-#endif
+	s->pressure=(int16_t)(unpackPressure(scom))-pOff; //gauge hpa
+	s->distance= (int16_t)(unpackPosition(scom))-disOff;
 	unpackQuaternion(&(scom->quaternionCom),&(s->quaternion));
 }
-
+uint16_t unpackPressure(SENSORDATACOMPACT *scom){
+#if COMPACT_VERSION_PRESSURE_HPA==1
+	return scom->pressure;
+#else
+	return scom->pressure*10;
+#endif
+}
+uint16_t unpackPosition(SENSORDATACOMPACT *scom){
+	uint16_t pos=0;
+#if COMPACT_VERSION_PRESSURE_HPA==1
+	pos= ((uint16_t)(scom->distance<<3)
+				+(uint16_t)(scom->quaternionCom.distanceBit2<<2)
+				+(uint16_t)(scom->quaternionCom.distanceBit1<<1)
+				+(uint16_t)(scom->quaternionCom.distanceBit0));
+#else
+	pos=scom->distance;
+#endif
+	return pos;
+}
 
 static unsigned int fastSqrt32(unsigned long n)
 {

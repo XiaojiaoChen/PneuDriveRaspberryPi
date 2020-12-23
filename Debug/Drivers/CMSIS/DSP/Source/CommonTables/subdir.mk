@@ -7,13 +7,13 @@ C_SRCS += \
 ../Drivers/CMSIS/DSP/Source/CommonTables/arm_common_tables.c \
 ../Drivers/CMSIS/DSP/Source/CommonTables/arm_const_structs.c 
 
-OBJS += \
-./Drivers/CMSIS/DSP/Source/CommonTables/arm_common_tables.o \
-./Drivers/CMSIS/DSP/Source/CommonTables/arm_const_structs.o 
-
 C_DEPS += \
 ./Drivers/CMSIS/DSP/Source/CommonTables/arm_common_tables.d \
 ./Drivers/CMSIS/DSP/Source/CommonTables/arm_const_structs.d 
+
+OBJS += \
+./Drivers/CMSIS/DSP/Source/CommonTables/arm_common_tables.o \
+./Drivers/CMSIS/DSP/Source/CommonTables/arm_const_structs.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

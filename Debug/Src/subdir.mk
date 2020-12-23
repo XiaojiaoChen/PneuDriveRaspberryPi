@@ -22,25 +22,6 @@ C_SRCS += \
 ../Src/tim.c \
 ../Src/usart.c 
 
-OBJS += \
-./Src/adc.o \
-./Src/can.o \
-./Src/dma.o \
-./Src/freertos.o \
-./Src/gfxsimulator.o \
-./Src/gpio.o \
-./Src/i2c.o \
-./Src/main.o \
-./Src/spi.o \
-./Src/stm32f7xx_hal_msp.o \
-./Src/stm32f7xx_hal_timebase_tim.o \
-./Src/stm32f7xx_it.o \
-./Src/syscalls.o \
-./Src/sysmem.o \
-./Src/system_stm32f7xx.o \
-./Src/tim.o \
-./Src/usart.o 
-
 C_DEPS += \
 ./Src/adc.d \
 ./Src/can.d \
@@ -59,6 +40,25 @@ C_DEPS += \
 ./Src/system_stm32f7xx.d \
 ./Src/tim.d \
 ./Src/usart.d 
+
+OBJS += \
+./Src/adc.o \
+./Src/can.o \
+./Src/dma.o \
+./Src/freertos.o \
+./Src/gfxsimulator.o \
+./Src/gpio.o \
+./Src/i2c.o \
+./Src/main.o \
+./Src/spi.o \
+./Src/stm32f7xx_hal_msp.o \
+./Src/stm32f7xx_hal_timebase_tim.o \
+./Src/stm32f7xx_it.o \
+./Src/syscalls.o \
+./Src/sysmem.o \
+./Src/system_stm32f7xx.o \
+./Src/tim.o \
+./Src/usart.o 
 
 
 # Each subdirectory must supply rules for building sources it contributes

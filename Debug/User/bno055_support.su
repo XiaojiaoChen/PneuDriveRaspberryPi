@@ -1,0 +1,5 @@
+bno055_support.c:15:5:bno055_start	16	static
+bno055_support.c:32:5:bno055_read_data	16	static
+bno055_support.c:53:4:BNO055_I2C_bus_write	40	static
+bno055_support.c:70:4:BNO055_I2C_bus_read	48	static
+bno055_support.c:88:6:BNO055_delay_msek	16	static
