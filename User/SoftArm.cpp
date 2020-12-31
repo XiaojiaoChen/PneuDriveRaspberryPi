@@ -157,6 +157,10 @@ void SOFT_ARM::execInfoCommand(char *infoBuf){
 	}
 }
 
+void SOFT_ARM::execInfoRaspberryPi(){
+	execInfoCommand(commandData.infos);
+}
+
 void SOFT_ARM::setupPumps(int d1,int a1, int d2, int a2) {
 	pSource.attach(d1, a1);
 	pSink.attach(d2, a2);

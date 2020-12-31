@@ -70,6 +70,7 @@ public:
 	void zeroPositionAll();
 	void writeCommandAll();
 	void execInfoCommand(char *);
+	void execInfoRaspberryPi();
 };
 
 

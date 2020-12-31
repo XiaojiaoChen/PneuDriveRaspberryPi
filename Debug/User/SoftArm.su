@@ -6,4 +6,5 @@ SoftArm.cpp:106:6:void SOFT_ARM::readPressureAll()	32	static
 SoftArm.cpp:118:6:void SOFT_ARM::writeCommandAll()	40	static
 SoftArm.cpp:146:6:void SOFT_ARM::maintainPressure(float, float)	24	static
 SoftArm.cpp:151:6:void SOFT_ARM::execInfoCommand(char*)	16	static
-SoftArm.cpp:160:6:void SOFT_ARM::setupPumps(int, int, int, int)	24	static
+SoftArm.cpp:160:6:void SOFT_ARM::execInfoRaspberryPi()	16	static
+SoftArm.cpp:164:6:void SOFT_ARM::setupPumps(int, int, int, int)	24	static

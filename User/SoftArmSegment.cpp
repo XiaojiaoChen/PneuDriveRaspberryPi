@@ -21,7 +21,7 @@ SOFT_ARM_SEGMENT::SOFT_ARM_SEGMENT(int num)
 	{
 		bellows[i]=basePlatform->chambers[i];
 	}
-
+	pressureBase=0;
 }
 
 

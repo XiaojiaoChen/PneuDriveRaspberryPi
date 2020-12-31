@@ -48,6 +48,9 @@ void loop() {
 	//update chamber's pressure from the CANbus************************/
 	softArm.readPressureAll();
 
+	//exec command from rasp
+	softArm.execInfoRaspberryPi();
+
 	/**Write the command of each chamber, either pressure or opening type*/
 	softArm.writeCommandAll();
 
